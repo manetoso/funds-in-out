@@ -1,0 +1,8 @@
+.expo/
+.vscode/
+node_modules/
+package.json
+tsconfig.json
+
+dist
+build

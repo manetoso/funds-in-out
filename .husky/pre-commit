@@ -1,0 +1,6 @@
+yarn lint
+# yarn test --passWithNoTests
+
+# exit 1 will never create a commit
+# commit this in dev
+# exit 1

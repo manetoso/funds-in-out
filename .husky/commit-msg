@@ -1,0 +1,3 @@
+node .husky/scripts/running-commit-msg.mjs "$1"
+npx --no-install commitlint --edit "$1"
+node .husky/scripts/custom-commit-msg.mjs "$1"
