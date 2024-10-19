@@ -1,0 +1,3 @@
+node .husky/scripts/running-pre-push-msg.mjs "$1"
+yarn lint
+node .husky/scripts/pre-push-msg.mjs "$1"
