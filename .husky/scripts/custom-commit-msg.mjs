@@ -11,5 +11,5 @@ const commitMsg = readFileSync(join(process.cwd(), commitMsgFile), "utf8").trim(
 console.log(success("🎉 Commit message validation completed! 🎉\n"));
 
 if (commitMsg) {
-  console.log(info(commitMsg));
+  console.log(info(`${commitMsg} \n`));
 }
