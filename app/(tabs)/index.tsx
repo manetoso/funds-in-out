@@ -1,11 +1,32 @@
 import { Image, StyleSheet, Platform } from "react-native";
+import { useEffect } from "react";
+import { useQuery } from "react-query";
 
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { supabase } from "@/app/api/supabase-client";
 
 export default function HomeScreen() {
+  const fetchTransactions = async () => {
+    const { data, error } = await supabase.rpc("get_expense_transactions", {
+      start_date: "2023-01-05",
+      end_date: "2023-01-10",
+    });
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data;
+  };
+  const { data, isLoading } = useQuery("transactions", fetchTransactions);
+  useEffect(() => {
+    console.log({ isLoading });
+  }, [isLoading]);
+  useEffect(() => {
+    if (!data) return;
+    console.log({ data });
+  }, [data]);
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
