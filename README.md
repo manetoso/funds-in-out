@@ -1,22 +1,39 @@
-# Welcome to your Expo app 👋
+# Funds in & out 💸 📈
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is a simple app to help me manage my daily incomes and expenses.
 
 ## Get started
 
-1. Install dependencies
+1. Install dependencies.
 
    ```bash
-   npm install
+   yarn install
    ```
 
-2. Start the app
+2. Set the environment variables clonning the `.env.template` file and renaming it to `.env`. Then, fill in the variables with your own values.
 
    ```bash
-    npx expo start
+   cp .env.template .env
    ```
 
-In the output, you'll find options to open the app in a
+   > [!NOTE]
+   > This project uses [supabase](https://supabase.com/) as a backend, so you'll need to create an account and a project to get the values for the `SUPABASE_URL` and `SUPABASE_API_KEY` variables. Those can be found in your project Home tab. **The schema used on the project can be found in the file `.db_schema_v1` of this repo.**
+
+   2.1. In case you want to update the supabase DB types you can use the following command:
+
+   ```bash
+   yarn supabase gen types --lang=typescript --project-id "fzmrmnsgdaesebjvrsbf" --schema public > ./app/api/supabase.types.ts
+   ```
+
+   > [!WARNING]
+   > This command will overwrite the file `./app/api/supabase.types.ts` with the new schema and add two lines of code at the beginning of the file and one at the end. **Make sure to delete those lines as they are not valid typescript code.**
+
+3. Start the app
+   ```bash
+   yarn dev
+   ```
+
+This app uses [Expo](https://docs.expo.dev/) so in the output, you'll find options to open the app in a
 
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)
 - [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
@@ -24,27 +41,3 @@ In the output, you'll find options to open the app in a
 - [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
