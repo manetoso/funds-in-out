@@ -16,8 +16,8 @@ This is a simple app to help me manage my daily incomes and expenses.
    cp .env.template .env
    ```
 
-   > [!NOTE]
-   > This project uses [supabase](https://supabase.com/) as a backend, so you'll need to create an account and a project to get the values for the `SUPABASE_URL` and `SUPABASE_API_KEY` variables. Those can be found in your project Home tab. **The schema used on the project can be found in the file `.db_schema_v1` of this repo.**
+> [!NOTE]
+> This project uses [supabase](https://supabase.com/) as a backend, so you'll need to create an account and a project to get the values for the `SUPABASE_URL` and `SUPABASE_API_KEY` variables. Those can be found in your project Home tab. **The schema used on the project can be found in the file `.db_schema_v1` of this repo.**
 
    2.1. In case you want to update the supabase DB types you can use the following command:
 
@@ -25,8 +25,8 @@ This is a simple app to help me manage my daily incomes and expenses.
    yarn supabase gen types --lang=typescript --project-id "fzmrmnsgdaesebjvrsbf" --schema public > ./app/api/supabase.types.ts
    ```
 
-   > [!WARNING]
-   > This command will overwrite the file `./app/api/supabase.types.ts` with the new schema and add two lines of code at the beginning of the file and one at the end. **Make sure to delete those lines as they are not valid typescript code.**
+> [!WARNING]
+> This command will overwrite the file `./app/api/supabase.types.ts` with the new schema and add two lines of code at the beginning of the file and one at the end. **Make sure to delete those lines as they are not valid typescript code.**
 
 3. Start the app
    ```bash
