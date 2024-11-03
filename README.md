@@ -67,12 +67,18 @@ As this repo uses Expo, you can refer to the [Create your first build](https://d
    eas build:configure
    ```
 
-   This should generate a file called `eas.json` that looks like the `eas-template.json` file in the repo. They create a build profile for the app named `preview` **build.preview**. The diference between your `eas.json` and the `eas-template.json` file should be that preview profile has the environment variables option in it. **Don't forget to replace the values with your own**.
+   This should generate a file called `eas.json` that looks like the `eas-template.json` file in the repo. They create a build profile for the app named `preview` **build.preview**. The diference between your `eas.json` and the `eas-template.json` file should be that preview profile has the environment variables option in it. **Don't forget to replace the values with your own**. Refer to this [link](https://docs.expo.dev/build-reference/variables/) to know how to set the environment variables in the build.
 
 4. Just run the following command to start the build in Android.
 
    ```bash
    eas build -p android --profile preview
+   ```
+
+   or just the command in package.json I created for you.
+
+   ```bash
+    yarn android:build
    ```
 
    This will start the build process and you can check the status of the build in your **Expo dashboard**. At the end should provide you with a link and QR code to download the APK file on your device. In case you want to access the link days before just go to your builds from the Expo dashboard, you would see a install button that downloads the APK on your device.

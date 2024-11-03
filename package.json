@@ -12,7 +12,8 @@
     "lint": "expo lint",
     "prettier": "prettier --config .prettierrc \"./**/*.+(js|ts|jsx|tsx)\" --check",
     "prettier:format": "prettier --config .prettierrc \"./**/*.+(js|ts|jsx|tsx)\" --write",
-    "prepare": "husky"
+    "prepare": "husky",
+    "android:build": "node scripts/confirm-build.mjs"
   },
   "jest": {
     "preset": "jest-expo"
