@@ -10,11 +10,19 @@ import { PaperProvider } from "react-native-paper";
 import { enGB, registerTranslation } from "react-native-paper-dates";
 import "react-native-reanimated";
 
+import { ContolSnackBar } from "@/src/common/components/ContolSnackBar";
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 registerTranslation("en-GB", enGB);
+
+/*
+  TODO LIST:
+  - Use BottomNavigation from react-native-paper
+  - Use Appbar from react-native-paper
+*/
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -49,6 +57,7 @@ export default function RootLayout() {
             />
             <Stack.Screen name="+not-found" />
           </Stack>
+          <ContolSnackBar />
         </PaperProvider>
       </ThemeProvider>
       {Platform.OS === "web" && <ReactQueryDevtools initialIsOpen={false} />}
