@@ -3,7 +3,7 @@ import { useState } from "react";
 import { MonthAccordion } from "./MonthAccordion";
 import { MonthSelector } from "./MonthSelector";
 import { TransactionsTable } from "./TransactionsTable";
-import { useFetchTransactions } from "../../hooks/useFetchTransactions";
+import { useFetchTransactions } from "@/src/features/transactions/hooks/useFetchTransactions";
 import { Months } from "@/src/common/types/date";
 
 // TODO: Move to home index
