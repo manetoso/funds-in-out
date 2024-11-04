@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
-import { Button, Text } from "react-native-paper";
+import { Button, FAB, Text } from "react-native-paper";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import { useFetchCategories } from "@/src/features/categories/hooks/useFetchCategories";
-import { useAddTransactions, useUpdateTransactions } from "@/src/features/transactions/hooks";
+import {
+  useAddTransactions,
+  useDeleteTransactions,
+  useUpdateTransactions,
+} from "@/src/features/transactions/hooks";
 import { MapTransactionFormToAPI } from "@/src/features/transactions/utils/map-transaction-form-to-api";
 import { ControlDateInput, ControlSelectInput, ControlTextInput } from "@/src/common/components";
 import { TransactionLoader } from "@/src/features/transactions/components";
@@ -37,6 +41,7 @@ export default function SingleTransactionScreen() {
     useLocalSearchParams<SingleTransactionScreenParams>();
   const { categories, isLoadingCategories } = useFetchCategories();
   const { addTransactionMutation } = useAddTransactions();
+  const { deleteTransactionMutation } = useDeleteTransactions();
   const { updateTransactionMutation } = useUpdateTransactions();
   const [transactionId] = useState(Number(id));
   const {
@@ -53,13 +58,18 @@ export default function SingleTransactionScreen() {
     },
   });
 
-  const onSubmit: SubmitHandler<TransactionFormValues> = data => {
+  const handleFormSubmit: SubmitHandler<TransactionFormValues> = data => {
     const dataToAPI = MapTransactionFormToAPI(data, categories!);
     if (transactionId === 0) {
       addTransactionMutation.mutate(dataToAPI);
     } else {
       updateTransactionMutation.mutate({ id: transactionId, data: dataToAPI });
     }
+    router.replace("/(main)/(tabs)");
+  };
+
+  const handleDelete = () => {
+    deleteTransactionMutation.mutate({ id: transactionId });
     router.replace("/(main)/(tabs)");
   };
   return (
@@ -124,10 +134,16 @@ export default function SingleTransactionScreen() {
             />
           </>
         )}
-        <Button loading={isLoadingCategories} onPress={handleSubmit(onSubmit)} mode="contained">
+        <Button
+          loading={isLoadingCategories}
+          onPress={handleSubmit(handleFormSubmit)}
+          mode="contained">
           {id ? "Update" : "Add"}
         </Button>
       </ScrollView>
+      {transactionId !== 0 && (
+        <FAB icon="delete" size="small" style={styles.fab} onPress={handleDelete} />
+      )}
     </KeyboardAvoidingView>
   );
 }
@@ -150,5 +166,11 @@ const styles = StyleSheet.create({
   },
   justifyCenter: {
     justifyContent: "center",
+  },
+  fab: {
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
 });

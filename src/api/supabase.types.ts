@@ -98,6 +98,12 @@ export type Database = {
         };
         Returns: Database["public"]["CompositeTypes"]["income_transaction_details"][];
       };
+      delete_transaction: {
+        Args: {
+          id_input: number;
+        };
+        Returns: boolean;
+      };
       get_expense_transactions: {
         Args: {
           start_date: string;
