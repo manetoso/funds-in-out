@@ -2,11 +2,8 @@ import { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 
 import { useFetchTransactions } from "@/src/features/transactions/hooks/useFetchTransactions";
-import {
-  MonthAccordion,
-  MonthSelector,
-  TransactionsTable,
-} from "@/src/features/home/components/months-grid";
+import { MonthAccordion, MonthSelector } from "@/src/features/home/components/months-grid";
+import { TransactionsTable } from "@/src/features/transactions/components";
 import { Months } from "@/src/common/types/date";
 import { TransactionType } from "@/src/api/resources/transactions/types/types";
 

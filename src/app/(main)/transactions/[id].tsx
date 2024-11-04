@@ -8,7 +8,7 @@ import { useFetchCategories } from "@/src/features/categories/hooks/useFetchCate
 import { useAddTransactions, useUpdateTransactions } from "@/src/features/transactions/hooks";
 import { MapTransactionFormToAPI } from "@/src/features/transactions/utils/map-transaction-form-to-api";
 import { ControlDateInput, ControlSelectInput, ControlTextInput } from "@/src/common/components";
-import { TransactionLoader } from "@/src/features/transactions/components/TransactionLoader";
+import { TransactionLoader } from "@/src/features/transactions/components";
 import { TransactionType } from "@/src/api/resources/transactions/types/types";
 import { type TransactionFormValues } from "@/src/features/transactions/types/transaction-form-values";
 
