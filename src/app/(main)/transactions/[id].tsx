@@ -3,15 +3,15 @@ import { router } from "expo-router";
 import { Button, Text } from "react-native-paper";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-import { ControlSelectInput } from "@/src/common/components/ControlSelectInput";
-import { ControlTextInput } from "@/src/common/components/ControlTextInput";
+import { ControlDateInput, ControlSelectInput, ControlTextInput } from "@/src/common/components";
 import { useFetchCategories } from "@/src/features/categories/hooks/useFetchCategories";
 import { useAddTransactions } from "@/src/features/transactions/hooks/useAddTransactions";
 import { TransactionType, type AddTransaction } from "@/src/api/resources/transactions/types/types";
 import { TransactionLoader } from "@/src/features/transactions/components/TransactionLoader";
 
-type TransactionFormValues = Omit<AddTransaction, "categoryId" | "type"> & {
+type TransactionFormValues = Omit<AddTransaction, "categoryId" | "type" | "date"> & {
   category: string;
+  date: Date;
   type: string;
 };
 
@@ -36,7 +36,6 @@ export default function SingleTransactionScreen() {
   } = useForm<TransactionFormValues>({
     defaultValues: {
       category: "",
-      date: "",
       description: "",
       type: "",
     },
@@ -46,7 +45,7 @@ export default function SingleTransactionScreen() {
     addTrnsactionMutation.mutate({
       amount: Number(data.amount),
       categoryId: categories!.find(category => category.name === data.category)!.id,
-      date: data.date,
+      date: data.date.toISOString().split("T")[0],
       description: data.description,
       type: data.type.toLowerCase() as TransactionType,
     });
@@ -56,7 +55,15 @@ export default function SingleTransactionScreen() {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={[styles.flex1]}>
-      <ScrollView contentContainerStyle={[styles.flexGrow1, styles.padding32, styles.gap16]}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.padding32,
+          styles.gap16,
+          isLoadingCategories && styles.flexGrow1,
+        ]}
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+        contentInsetAdjustmentBehavior="always">
         <Text variant="headlineMedium">Transaction Info</Text>
         {isLoadingCategories || typeof categories === "undefined" ? (
           <TransactionLoader />
@@ -79,12 +86,11 @@ export default function SingleTransactionScreen() {
               name="category"
               required
             />
-            <ControlTextInput<TransactionFormValues>
+            <ControlDateInput<TransactionFormValues>
               control={control}
               error={!!errors.date}
               label="Date"
               name="date"
-              placeholder="2025-09-20"
               required
             />
             <ControlTextInput<TransactionFormValues>

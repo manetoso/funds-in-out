@@ -7,12 +7,14 @@ import * as SplashScreen from "expo-splash-screen";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { PaperProvider } from "react-native-paper";
+import { enGB, registerTranslation } from "react-native-paper-dates";
 import "react-native-reanimated";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
+registerTranslation("en-GB", enGB);
 
 export default function RootLayout() {
   const [loaded] = useFonts({
