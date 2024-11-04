@@ -4,11 +4,11 @@ import { addTransaction } from "@/src/api/resources";
 
 export const useAddTransactions = () => {
   const queryClient = useQueryClient();
-  const addTrnsactionMutation = useMutation(addTransaction, {
+  const addTransactionMutation = useMutation(addTransaction, {
     onSuccess: () => {
       queryClient.invalidateQueries("transactions");
     },
   });
 
-  return { addTrnsactionMutation };
+  return { addTransactionMutation };
 };

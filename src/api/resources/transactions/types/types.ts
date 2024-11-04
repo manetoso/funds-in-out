@@ -13,6 +13,11 @@ export type AddTransaction = {
   type: TransactionType;
 };
 
+export type UpdateTransaction = {
+  id: number;
+  data: AddTransaction;
+};
+
 export enum TransactionType {
   Expense = "expense",
   Income = "income",
