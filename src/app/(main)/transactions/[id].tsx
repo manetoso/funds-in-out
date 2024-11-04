@@ -1,18 +1,24 @@
+import { useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Button, Text } from "react-native-paper";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-import { ControlDateInput, ControlSelectInput, ControlTextInput } from "@/src/common/components";
 import { useFetchCategories } from "@/src/features/categories/hooks/useFetchCategories";
-import { useAddTransactions } from "@/src/features/transactions/hooks/useAddTransactions";
-import { TransactionType, type AddTransaction } from "@/src/api/resources/transactions/types/types";
+import { useAddTransactions, useUpdateTransactions } from "@/src/features/transactions/hooks";
+import { MapTransactionFormToAPI } from "@/src/features/transactions/utils/map-transaction-form-to-api";
+import { ControlDateInput, ControlSelectInput, ControlTextInput } from "@/src/common/components";
 import { TransactionLoader } from "@/src/features/transactions/components/TransactionLoader";
+import { TransactionType } from "@/src/api/resources/transactions/types/types";
+import { type TransactionFormValues } from "@/src/features/transactions/types/transaction-form-values";
 
-type TransactionFormValues = Omit<AddTransaction, "categoryId" | "type" | "date"> & {
-  category: string;
-  date: Date;
-  type: string;
+type SingleTransactionScreenParams = {
+  id?: string;
+  queryAmount?: string;
+  queryCategory?: string;
+  queryDate?: string;
+  queryDescription?: string;
+  queryType?: string;
 };
 
 const TRNSACTION_TYPES = [
@@ -27,28 +33,33 @@ const TRNSACTION_TYPES = [
 ];
 
 export default function SingleTransactionScreen() {
+  const { id, queryAmount, queryCategory, queryDate, queryDescription, queryType } =
+    useLocalSearchParams<SingleTransactionScreenParams>();
   const { categories, isLoadingCategories } = useFetchCategories();
-  const { addTrnsactionMutation } = useAddTransactions();
+  const { addTransactionMutation } = useAddTransactions();
+  const { updateTransactionMutation } = useUpdateTransactions();
+  const [transactionId] = useState(Number(id));
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<TransactionFormValues>({
     defaultValues: {
-      category: "",
-      description: "",
-      type: "",
+      category: queryCategory ?? "",
+      date: queryDate ? new Date(queryDate) : new Date(),
+      description: queryDescription ?? "",
+      type: queryType ? queryType.charAt(0).toUpperCase() + queryType.slice(1) : "",
+      ...(queryAmount && { amount: queryAmount }),
     },
   });
 
   const onSubmit: SubmitHandler<TransactionFormValues> = data => {
-    addTrnsactionMutation.mutate({
-      amount: Number(data.amount),
-      categoryId: categories!.find(category => category.name === data.category)!.id,
-      date: data.date.toISOString().split("T")[0],
-      description: data.description,
-      type: data.type.toLowerCase() as TransactionType,
-    });
+    const dataToAPI = MapTransactionFormToAPI(data, categories!);
+    if (transactionId === 0) {
+      addTransactionMutation.mutate(dataToAPI);
+    } else {
+      updateTransactionMutation.mutate({ id: transactionId, data: dataToAPI });
+    }
     router.replace("/(main)/(tabs)");
   };
   return (
@@ -65,6 +76,7 @@ export default function SingleTransactionScreen() {
         keyboardShouldPersistTaps="handled"
         contentInsetAdjustmentBehavior="always">
         <Text variant="headlineMedium">Transaction Info</Text>
+        {/* TODO: SHOW ERROR WHEN CATEGORIES ARE UNDEFINED */}
         {isLoadingCategories || typeof categories === "undefined" ? (
           <TransactionLoader />
         ) : (
@@ -113,7 +125,7 @@ export default function SingleTransactionScreen() {
           </>
         )}
         <Button loading={isLoadingCategories} onPress={handleSubmit(onSubmit)} mode="contained">
-          Submit
+          {id ? "Update" : "Add"}
         </Button>
       </ScrollView>
     </KeyboardAvoidingView>

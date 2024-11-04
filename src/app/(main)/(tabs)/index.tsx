@@ -8,30 +8,27 @@ import {
   TransactionsTable,
 } from "@/src/features/home/components/months-grid";
 import { Months } from "@/src/common/types/date";
-import { Link } from "expo-router";
-import { Text } from "react-native-paper";
+import { TransactionType } from "@/src/api/resources/transactions/types/types";
 
 export default function HomeScreen() {
+  // TODO: SAVE SELECTED MONTH IN LOCAL STORAGE
   const [selectedMonth, setSelectedMonth] = useState(Months.January);
   const { expenseData, expenseIsLoading, incomeData, incomeIsLoading } =
     useFetchTransactions(selectedMonth);
   return (
     <ScrollView contentContainerStyle={[styles.padding32, styles.gap16, styles.mT20]}>
-      <Link href="/(main)/transactions/1">
-        <Text variant="bodyLarge">Go to transactions</Text>
-      </Link>
       <MonthSelector selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
       <MonthAccordion
         selectedMonth={selectedMonth}
         title="Income"
         totalRecords={incomeIsLoading ? undefined : (incomeData?.length ?? 0)}>
-        <TransactionsTable transactions={incomeData} />
+        <TransactionsTable transactions={incomeData} type={TransactionType.Income} />
       </MonthAccordion>
       <MonthAccordion
         selectedMonth={selectedMonth}
         title="Expenses"
         totalRecords={expenseIsLoading ? undefined : (expenseData?.length ?? 0)}>
-        <TransactionsTable transactions={expenseData} />
+        <TransactionsTable transactions={expenseData} type={TransactionType.Expense} />
       </MonthAccordion>
     </ScrollView>
   );
