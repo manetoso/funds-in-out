@@ -1,39 +1,50 @@
-import { Image, StyleSheet } from "react-native";
-import { Link } from "expo-router";
+import { useState } from "react";
+import { ScrollView, StyleSheet } from "react-native";
 
-import ParallaxScrollView from "@/src/common/components/ParallaxScrollView";
-import { MonthsGrid } from "@/src/features/home/components/index";
+import { useFetchTransactions } from "@/src/features/transactions/hooks/useFetchTransactions";
+import {
+  MonthAccordion,
+  MonthSelector,
+  TransactionsTable,
+} from "@/src/features/home/components/months-grid";
+import { Months } from "@/src/common/types/date";
+import { Link } from "expo-router";
 import { Text } from "react-native-paper";
 
 export default function HomeScreen() {
+  const [selectedMonth, setSelectedMonth] = useState(Months.January);
+  const { expenseData, expenseIsLoading, incomeData, incomeIsLoading } =
+    useFetchTransactions(selectedMonth);
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/partial-react-logo.png")}
-          style={styles.reactLogo}
-        />
-      }>
+    <ScrollView contentContainerStyle={[styles.padding32, styles.gap16, styles.mT20]}>
       <Link href="/(main)/transactions/1">
         <Text variant="bodyLarge">Go to transactions</Text>
       </Link>
-      <MonthsGrid />
-    </ParallaxScrollView>
+      <MonthSelector selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
+      <MonthAccordion
+        selectedMonth={selectedMonth}
+        title="Income"
+        totalRecords={incomeIsLoading ? undefined : (incomeData?.length ?? 0)}>
+        <TransactionsTable transactions={incomeData} />
+      </MonthAccordion>
+      <MonthAccordion
+        selectedMonth={selectedMonth}
+        title="Expenses"
+        totalRecords={expenseIsLoading ? undefined : (expenseData?.length ?? 0)}>
+        <TransactionsTable transactions={expenseData} />
+      </MonthAccordion>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
+  padding32: {
+    padding: 32,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
+  gap16: {
+    gap: 16,
+  },
+  mT20: {
+    marginTop: 20,
   },
 });
