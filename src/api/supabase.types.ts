@@ -88,6 +88,16 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      add_transaction: {
+        Args: {
+          amount_input: number;
+          category_id_input: number;
+          date_input: string;
+          description_input: string;
+          type_input: string;
+        };
+        Returns: Database["public"]["CompositeTypes"]["income_transaction_details"][];
+      };
       get_expense_transactions: {
         Args: {
           start_date: string;

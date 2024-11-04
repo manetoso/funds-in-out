@@ -5,18 +5,26 @@ export type FetchMonthlyTransactions = {
   type: TransactionType;
 };
 
+export type AddTransaction = {
+  amount: number;
+  categoryId: number;
+  date: string;
+  description: string;
+  type: TransactionType;
+};
+
 export enum TransactionType {
-  Income = "income",
   Expense = "expense",
+  Income = "income",
 }
 
 export type Transactions = TransactionRecord[] | undefined;
 
 export type TransactionRecord = {
-  id: number | null;
+  amount: number | null;
+  category_name: string | null;
   date: string | null;
   description: string | null;
-  amount: number | null;
+  id: number | null;
   type: string | null;
-  category_name: string | null;
 };
