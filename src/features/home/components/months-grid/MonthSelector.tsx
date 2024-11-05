@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Chip, Divider, Menu } from "react-native-paper";
 
+import { useAsyncStorage } from "@/src/common/hooks/useAsyncStorage";
 import { MONTHS_ARRAY } from "@/src/common/constants/dates";
 import { Months } from "@/src/common/types/date";
 
@@ -12,9 +13,13 @@ type MonthSelectorProps = {
 
 export const MonthSelector = ({ selectedMonth, setSelectedMonth }: MonthSelectorProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { setItem } = useAsyncStorage();
 
   const openMenu = () => setIsMenuOpen(true);
   const closeMenu = () => setIsMenuOpen(false);
+  const storeSelectedMonth = async (value: string) => {
+    await setItem("selectedMonth", value);
+  };
 
   return (
     <View style={styles.listTitleWrapper}>
@@ -32,8 +37,9 @@ export const MonthSelector = ({ selectedMonth, setSelectedMonth }: MonthSelector
           <Menu.Item
             key={month}
             onPress={() => {
-              closeMenu();
               setSelectedMonth(month);
+              storeSelectedMonth(month);
+              closeMenu();
             }}
             title={month}
             dense

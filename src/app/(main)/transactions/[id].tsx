@@ -11,10 +11,20 @@ import {
   useUpdateTransactions,
 } from "@/src/features/transactions/hooks";
 import { MapTransactionFormToAPI } from "@/src/features/transactions/utils/map-transaction-form-to-api";
-import { ControlDateInput, ControlSelectInput, ControlTextInput } from "@/src/common/components";
-import { TransactionLoader } from "@/src/features/transactions/components";
+import {
+  ControlDateInput,
+  ControlSelectInput,
+  ControlTextInput,
+  Switch,
+} from "@/src/common/components";
+import {
+  TransactionFormError,
+  TransactionFormNoCategories,
+  TransactionLoader,
+} from "@/src/features/transactions/components";
 import { TransactionType } from "@/src/api/resources/transactions/types/types";
 import { type TransactionFormValues } from "@/src/features/transactions/types/transaction-form-values";
+import { useSnackbarStore } from "@/src/stores/useSnackbarStore";
 
 type SingleTransactionScreenParams = {
   id?: string;
@@ -39,10 +49,11 @@ const TRNSACTION_TYPES = [
 export default function SingleTransactionScreen() {
   const { id, queryAmount, queryCategory, queryDate, queryDescription, queryType } =
     useLocalSearchParams<SingleTransactionScreenParams>();
-  const { categories, isLoadingCategories } = useFetchCategories();
+  const { categories, isErrorCategories, isLoadingCategories } = useFetchCategories();
   const { addTransactionMutation } = useAddTransactions();
   const { deleteTransactionMutation } = useDeleteTransactions();
   const { updateTransactionMutation } = useUpdateTransactions();
+  const { showSnackbar } = useSnackbarStore();
   const [transactionId] = useState(Number(id));
   const {
     control,
@@ -62,14 +73,17 @@ export default function SingleTransactionScreen() {
     const dataToAPI = MapTransactionFormToAPI(data, categories!);
     if (transactionId === 0) {
       addTransactionMutation.mutate(dataToAPI);
+      showSnackbar("Transaction added successfully");
     } else {
       updateTransactionMutation.mutate({ id: transactionId, data: dataToAPI });
+      showSnackbar("Transaction updated successfully");
     }
     router.replace("/(main)/(tabs)");
   };
 
   const handleDelete = () => {
     deleteTransactionMutation.mutate({ id: transactionId });
+    showSnackbar("Transaction deleted successfully");
     router.replace("/(main)/(tabs)");
   };
   return (
@@ -86,11 +100,18 @@ export default function SingleTransactionScreen() {
         keyboardShouldPersistTaps="handled"
         contentInsetAdjustmentBehavior="always">
         <Text variant="headlineMedium">Transaction Info</Text>
-        {/* TODO: SHOW ERROR WHEN CATEGORIES ARE UNDEFINED */}
-        {isLoadingCategories || typeof categories === "undefined" ? (
-          <TransactionLoader />
-        ) : (
-          <>
+
+        <Switch>
+          <Switch.Case condition={isLoadingCategories}>
+            <TransactionLoader />
+          </Switch.Case>
+          <Switch.Case condition={isErrorCategories}>
+            <TransactionFormError />
+          </Switch.Case>
+          <Switch.Case condition={typeof categories === "undefined"}>
+            <TransactionFormNoCategories />
+          </Switch.Case>
+          <Switch.Default>
             <ControlTextInput<TransactionFormValues>
               control={control}
               error={!!errors.amount}
@@ -102,7 +123,7 @@ export default function SingleTransactionScreen() {
             />
             <ControlSelectInput<TransactionFormValues>
               control={control}
-              data={categories}
+              data={categories!}
               error={!!errors.category}
               label="Category"
               name="category"
@@ -132,18 +153,22 @@ export default function SingleTransactionScreen() {
               name="type"
               required
             />
-          </>
-        )}
-        <Button
-          loading={isLoadingCategories}
-          onPress={handleSubmit(handleFormSubmit)}
-          mode="contained">
-          {id ? "Update" : "Add"}
-        </Button>
+            <Button
+              loading={isLoadingCategories}
+              onPress={handleSubmit(handleFormSubmit)}
+              mode="contained">
+              {transactionId !== 0 ? "Update" : "Add"}
+            </Button>
+          </Switch.Default>
+        </Switch>
       </ScrollView>
-      {transactionId !== 0 && (
-        <FAB icon="delete" size="small" style={styles.fab} onPress={handleDelete} />
-      )}
+
+      {transactionId !== 0 &&
+        !isLoadingCategories &&
+        !isErrorCategories &&
+        typeof categories !== "undefined" && (
+          <FAB icon="delete" size="small" style={styles.fab} onPress={handleDelete} />
+        )}
     </KeyboardAvoidingView>
   );
 }
