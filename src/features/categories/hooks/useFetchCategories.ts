@@ -6,8 +6,12 @@ export const useFetchCategories = () => {
   const {
     data: categories,
     isError: isErrorCategories,
-    isLoading: isLoadingCategories,
-  } = useQuery(["categories"], fetchCategories());
+    isFetching: isLoadingCategories,
+  } = useQuery({
+    queryKey: "categories",
+    queryFn: fetchCategories(),
+    cacheTime: 7200000,
+  });
 
   return { categories, isErrorCategories, isLoadingCategories };
 };

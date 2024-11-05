@@ -5,19 +5,31 @@ import { TransactionType } from "@/src/api/resources/transactions/types/types";
 import { Months } from "@/src/common/types/date";
 
 export const useFetchTransactions = (selectedMonth: Months) => {
-  const { data: incomeData, isLoading: incomeIsLoading } = useQuery(
-    [selectedMonth, TransactionType.Income, "transactions"],
-    fetchMonthlyTransactions({ month: selectedMonth, type: TransactionType.Income }),
-  );
-  const { data: expenseData, isLoading: expenseIsLoading } = useQuery(
-    [selectedMonth, TransactionType.Expense, "transactions"],
-    fetchMonthlyTransactions({ month: selectedMonth, type: TransactionType.Expense }),
-  );
+  const {
+    data: incomeData,
+    isFetching: incomeIsLoading,
+    refetch: refetchIncome,
+  } = useQuery({
+    queryKey: [selectedMonth, TransactionType.Income, "transactions"],
+    queryFn: fetchMonthlyTransactions({ month: selectedMonth, type: TransactionType.Income }),
+    cacheTime: 7200000,
+  });
+  const {
+    data: expenseData,
+    isFetching: expenseIsLoading,
+    refetch: refetchExpense,
+  } = useQuery({
+    queryKey: [selectedMonth, TransactionType.Expense, "transactions"],
+    queryFn: fetchMonthlyTransactions({ month: selectedMonth, type: TransactionType.Expense }),
+    cacheTime: 7200000,
+  });
 
   return {
     incomeData,
     incomeIsLoading,
     expenseData,
     expenseIsLoading,
+    refetchIncome,
+    refetchExpense,
   };
 };

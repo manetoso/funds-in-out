@@ -17,7 +17,7 @@ create table
   );
 
 alter table transactions
-add constraint fk_category foreign key (category_id) references categories (id);
+add constraint fk_category foreign key (category_id) references categories (id) on delete set null;
 
 create table
   reports (

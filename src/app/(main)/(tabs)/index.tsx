@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 
 import { useAsyncStorage } from "@/src/common/hooks/useAsyncStorage";
 import { useFetchTransactions } from "@/src/features/transactions/hooks/useFetchTransactions";
@@ -10,32 +10,64 @@ import { TransactionType } from "@/src/api/resources/transactions/types/types";
 
 export default function HomeScreen() {
   const [selectedMonth, setSelectedMonth] = useState(Months.January);
-  const { expenseData, expenseIsLoading, incomeData, incomeIsLoading } =
-    useFetchTransactions(selectedMonth);
+  const {
+    expenseData,
+    expenseIsLoading,
+    incomeData,
+    incomeIsLoading,
+    refetchExpense,
+    refetchIncome,
+  } = useFetchTransactions(selectedMonth);
   const { getItem } = useAsyncStorage();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const getSelectedMonth = useCallback(async () => {
     const sotredSelectedMonth = await getItem("selectedMonth");
     if (sotredSelectedMonth) setSelectedMonth(sotredSelectedMonth as Months);
   }, [getItem]);
 
+  const handleRefreshControl = async () => {
+    setIsRefreshing(true);
+    await refetchExpense();
+    await refetchIncome();
+    setIsRefreshing(false);
+  };
+
   useEffect(() => {
     getSelectedMonth();
   }, [getSelectedMonth]);
+
+  // RE-FETCH FROM router.back() but not working 100% of the time
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     refetchExpense();
+  //     refetchIncome();
+  //   }, [refetchExpense, refetchIncome]),
+  // );
   return (
-    <ScrollView contentContainerStyle={[styles.padding32, styles.gap16, styles.mT20]}>
+    <ScrollView
+      refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefreshControl} />}
+      contentContainerStyle={[styles.padding32, styles.gap16, styles.mT20]}>
       <MonthSelector selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
       <MonthAccordion
         selectedMonth={selectedMonth}
         title="Income"
         totalRecords={incomeIsLoading ? undefined : (incomeData?.length ?? 0)}>
-        <TransactionsTable transactions={incomeData} type={TransactionType.Income} />
+        <TransactionsTable
+          isLoading={incomeIsLoading}
+          transactions={incomeData}
+          type={TransactionType.Income}
+        />
       </MonthAccordion>
       <MonthAccordion
         selectedMonth={selectedMonth}
         title="Expenses"
         totalRecords={expenseIsLoading ? undefined : (expenseData?.length ?? 0)}>
-        <TransactionsTable transactions={expenseData} type={TransactionType.Expense} />
+        <TransactionsTable
+          isLoading={expenseIsLoading}
+          transactions={expenseData}
+          type={TransactionType.Expense}
+        />
       </MonthAccordion>
     </ScrollView>
   );

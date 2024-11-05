@@ -15,10 +15,10 @@ export const updateTransaction = async ({
     type_input: type,
   });
   if (error) {
-    log.error("Error adding new transaction", {
+    log.error(`Error updating transaction with id: ${id}`, {
       status,
       error,
-      message: "Error adding new transaction",
+      message: `Error updating transaction with id: ${id}`,
       data: {
         id,
         amount,

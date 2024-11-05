@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { Button, FAB, Text } from "react-native-paper";
 import { useForm, SubmitHandler } from "react-hook-form";
 
@@ -25,6 +25,7 @@ import {
 import { TransactionType } from "@/src/api/resources/transactions/types/types";
 import { type TransactionFormValues } from "@/src/features/transactions/types/transaction-form-values";
 import { useSnackbarStore } from "@/src/stores/useSnackbarStore";
+import { useCategoryStore } from "@/src/stores";
 
 type SingleTransactionScreenParams = {
   id?: string;
@@ -49,19 +50,22 @@ const TRNSACTION_TYPES = [
 export default function SingleTransactionScreen() {
   const { id, queryAmount, queryCategory, queryDate, queryDescription, queryType } =
     useLocalSearchParams<SingleTransactionScreenParams>();
+  const navigation = useNavigation();
   const { categories, isErrorCategories, isLoadingCategories } = useFetchCategories();
   const { addTransactionMutation } = useAddTransactions();
   const { deleteTransactionMutation } = useDeleteTransactions();
   const { updateTransactionMutation } = useUpdateTransactions();
+  const { currentCategory, setCurrentCategory } = useCategoryStore();
   const { showSnackbar } = useSnackbarStore();
   const [transactionId] = useState(Number(id));
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<TransactionFormValues>({
     defaultValues: {
-      category: queryCategory ?? "",
+      category: queryCategory ?? currentCategory,
       date: queryDate ? new Date(queryDate) : new Date(),
       description: queryDescription ?? "",
       type: queryType ? queryType.charAt(0).toUpperCase() + queryType.slice(1) : "",
@@ -69,23 +73,38 @@ export default function SingleTransactionScreen() {
     },
   });
 
-  const handleFormSubmit: SubmitHandler<TransactionFormValues> = data => {
+  const handleFormSubmit: SubmitHandler<TransactionFormValues> = async data => {
     const dataToAPI = MapTransactionFormToAPI(data, categories!);
     if (transactionId === 0) {
-      addTransactionMutation.mutate(dataToAPI);
+      await addTransactionMutation.mutateAsync(dataToAPI);
       showSnackbar("Transaction added successfully");
     } else {
-      updateTransactionMutation.mutate({ id: transactionId, data: dataToAPI });
+      await updateTransactionMutation.mutateAsync({ id: transactionId, data: dataToAPI });
       showSnackbar("Transaction updated successfully");
     }
+    setCurrentCategory("");
     router.replace("/(main)/(tabs)");
   };
 
-  const handleDelete = () => {
-    deleteTransactionMutation.mutate({ id: transactionId });
+  const handleDelete = async () => {
+    await deleteTransactionMutation.mutateAsync({ id: transactionId });
     showSnackbar("Transaction deleted successfully");
+    setCurrentCategory("");
     router.replace("/(main)/(tabs)");
   };
+
+  useEffect(() => {
+    if (currentCategory) setValue("category", currentCategory);
+  }, [currentCategory, setValue]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("beforeRemove", e => {
+      setCurrentCategory("");
+    });
+
+    return unsubscribe;
+  }, [currentCategory, navigation, setCurrentCategory]);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -121,13 +140,15 @@ export default function SingleTransactionScreen() {
               placeholder="150"
               required
             />
-            <ControlSelectInput<TransactionFormValues>
+            <ControlTextInput<TransactionFormValues>
               control={control}
-              data={categories!}
               error={!!errors.category}
               label="Category"
               name="category"
               required
+              onPress={() => {
+                router.push("/(main)/categories");
+              }}
             />
             <ControlDateInput<TransactionFormValues>
               control={control}

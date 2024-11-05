@@ -88,6 +88,15 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      add_category: {
+        Args: {
+          name_input: string;
+        };
+        Returns: {
+          id: number;
+          name: string;
+        }[];
+      };
       add_transaction: {
         Args: {
           amount_input: number;
@@ -97,6 +106,12 @@ export type Database = {
           type_input: string;
         };
         Returns: Database["public"]["CompositeTypes"]["income_transaction_details"][];
+      };
+      delete_category: {
+        Args: {
+          id_input: number;
+        };
+        Returns: boolean;
       };
       delete_transaction: {
         Args: {
@@ -117,6 +132,16 @@ export type Database = {
           end_date: string;
         };
         Returns: Database["public"]["CompositeTypes"]["income_transaction_details"][];
+      };
+      update_category: {
+        Args: {
+          id_input: number;
+          name_input: string;
+        };
+        Returns: {
+          id: number;
+          name: string;
+        }[];
       };
       update_transaction: {
         Args: {

@@ -22,6 +22,7 @@ registerTranslation("en-GB", enGB);
   TODO LIST:
   - Use BottomNavigation from react-native-paper
   - Use Appbar from react-native-paper
+  - Update categpries table to include color
 */
 
 export default function RootLayout() {
@@ -49,6 +50,26 @@ export default function RootLayout() {
               name="(main)/transactions/[id]"
               options={{
                 title: "Transaction",
+                headerBackTitle: "Back",
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
+              }}
+            />
+            <Stack.Screen
+              name="(main)/categories/index"
+              options={{
+                title: "Tags",
+                headerBackTitle: "Back",
+                headerTitleStyle: {
+                  fontWeight: "bold",
+                },
+              }}
+            />
+            <Stack.Screen
+              name="(main)/categories/details/index"
+              options={{
+                title: "Tag",
                 headerBackTitle: "Back",
                 headerTitleStyle: {
                   fontWeight: "bold",
