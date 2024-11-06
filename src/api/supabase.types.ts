@@ -5,14 +5,17 @@ export type Database = {
     Tables: {
       categories: {
         Row: {
+          color: string | null;
           id: number;
           name: string;
         };
         Insert: {
+          color?: string | null;
           id?: never;
           name: string;
         };
         Update: {
+          color?: string | null;
           id?: never;
           name?: string;
         };
@@ -88,25 +91,28 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      add_category: {
-        Args: {
-          name_input: string;
-        };
-        Returns: {
-          id: number;
-          name: string;
-        }[];
-      };
-      add_transaction: {
-        Args: {
-          amount_input: number;
-          category_id_input: number;
-          date_input: string;
-          description_input: string;
-          type_input: string;
-        };
-        Returns: Database["public"]["CompositeTypes"]["income_transaction_details"][];
-      };
+      add_category:
+        | {
+            Args: {
+              name_input: string;
+            };
+            Returns: {
+              color: string | null;
+              id: number;
+              name: string;
+            }[];
+          }
+        | {
+            Args: {
+              name_input: string;
+              color_input: string;
+            };
+            Returns: {
+              color: string | null;
+              id: number;
+              name: string;
+            }[];
+          };
       delete_category: {
         Args: {
           id_input: number;
@@ -131,48 +137,52 @@ export type Database = {
           start_date: string;
           end_date: string;
         };
-        Returns: Database["public"]["CompositeTypes"]["income_transaction_details"][];
+        Returns: Database["public"]["CompositeTypes"]["transaction_details"][];
       };
       get_income_transactions: {
         Args: {
           start_date: string;
           end_date: string;
         };
-        Returns: Database["public"]["CompositeTypes"]["income_transaction_details"][];
+        Returns: Database["public"]["CompositeTypes"]["transaction_details"][];
       };
-      update_category: {
-        Args: {
-          id_input: number;
-          name_input: string;
-        };
-        Returns: {
-          id: number;
-          name: string;
-        }[];
-      };
-      update_transaction: {
-        Args: {
-          id_input: number;
-          amount_input: number;
-          category_id_input: number;
-          date_input: string;
-          description_input: string;
-          type_input: string;
-        };
-        Returns: Database["public"]["CompositeTypes"]["income_transaction_details"][];
-      };
+      update_category:
+        | {
+            Args: {
+              id_input: number;
+              name_input: string;
+            };
+            Returns: {
+              color: string | null;
+              id: number;
+              name: string;
+            }[];
+          }
+        | {
+            Args: {
+              id_input: number;
+              name_input: string;
+              color_input: string;
+            };
+            Returns: {
+              color: string | null;
+              id: number;
+              name: string;
+            }[];
+          };
     };
     Enums: {
       [_ in never]: never;
     };
     CompositeTypes: {
-      income_transaction_details: {
+      transaction_details: {
         id: number | null;
         date: string | null;
         description: string | null;
         amount: number | null;
         type: string | null;
         category_name: string | null;
+        category_color: string | null;
       };
     };
   };

@@ -13,7 +13,8 @@ create table
 create table
   categories (
     id bigint primary key generated always as identity,
-    name text not null unique
+    name text not null unique,
+    color VARCHAR(7) CHECK (color ~ '^#([A-Fa-f0-9]{6})$')
   );
 
 alter table transactions
@@ -51,17 +52,17 @@ values
 
 -- Insert some sample categories
 insert into
-  categories (name)
+  categories (name, color)
 values
-  ('Rent/Mortage'),
-  ('Dinning out'),
-  ('Cash'),
-  ('Transportation'),
-  ('Groceries'),
-  ('Debts'),
-  ('Services'),
-  ('Salary'),
-  ('Other');
+  ('Rent/Mortage', '#5C332C'),
+  ('Dinning out', '#5C332C'),
+  ('Cash', '#5C332C'),
+  ('Transportation', '#785A2B'),
+  ('Groceries', '#304D38'),
+  ('Debts', '#293C5F'),
+  ('Services', '#3D2B57'),
+  ('Salary', '#304D38'),
+  ('Other', '#572F42');
 
 -- Insert some sample transactions
 insert into

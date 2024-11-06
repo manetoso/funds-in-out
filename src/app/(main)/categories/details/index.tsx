@@ -7,14 +7,16 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { ControlTextInput } from "@/src/common/components";
 import { useMutateCategories } from "@/src/features/categories/hooks";
 import { useCategoryStore, useSnackbarStore } from "@/src/stores";
+import { type Category } from "@/src/api/resources/categories/types/types";
 
 type CategoryDetailsScreenParams = {
   queryId?: string;
   queryName?: string;
+  queryColor?: string;
 };
 
 export default function CategoryDetailsScreen() {
-  const { queryId, queryName } = useLocalSearchParams<CategoryDetailsScreenParams>();
+  const { queryId, queryName, queryColor } = useLocalSearchParams<CategoryDetailsScreenParams>();
   const { addCategoryMutation, deleteCategoryMutation, updateCategoryMutation } =
     useMutateCategories();
   const [isAnyMutationLoading, setIsAnyMutationLoading] = useState(false);
@@ -25,18 +27,19 @@ export default function CategoryDetailsScreen() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<{ name: string }>({
+  } = useForm<Omit<Category, "id">>({
     defaultValues: {
       name: queryName ?? "",
+      color: queryColor ?? "",
     },
   });
 
-  const handleFormSubmit: SubmitHandler<{ name: string }> = async ({ name }) => {
+  const handleFormSubmit: SubmitHandler<Omit<Category, "id">> = async ({ name, color }) => {
     if (categoryId === 0) {
-      await addCategoryMutation.mutateAsync({ name });
+      await addCategoryMutation.mutateAsync({ name, color });
       showSnackbar("Tag added successfully");
     } else {
-      await updateCategoryMutation.mutateAsync({ id: categoryId, name });
+      await updateCategoryMutation.mutateAsync({ id: categoryId, name, color });
       showSnackbar("Tag updated successfully");
     }
     setCurrentCategory("");
@@ -68,11 +71,20 @@ export default function CategoryDetailsScreen() {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={[styles.flex1]}>
-      <ControlTextInput<{ name: string }>
+      <ControlTextInput<Omit<Category, "id">>
         control={control}
         error={!!errors.name}
         label="Tag Name"
         name="name"
+        required
+        onSubmitEditing={handleSubmit(handleFormSubmit)}
+        disabled={isAnyMutationLoading}
+      />
+      <ControlTextInput<Omit<Category, "id">>
+        control={control}
+        error={!!errors.name}
+        label="Tag color"
+        name="color"
         required
         onSubmitEditing={handleSubmit(handleFormSubmit)}
         disabled={isAnyMutationLoading}

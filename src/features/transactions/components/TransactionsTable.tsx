@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { Href, router } from "expo-router";
-import { ActivityIndicator, Button, DataTable, Text } from "react-native-paper";
+import { ActivityIndicator, Button, Chip, DataTable, Text } from "react-native-paper";
 
 import { Switch } from "@/src/common/components";
 import {
@@ -73,9 +73,16 @@ export const TransactionsTable = ({ isLoading, transactions, type }: Transaction
                 </Text>
               </DataTable.Cell>
               <DataTable.Cell style={styles.tableCellBig}>
-                <Text variant="bodySmall" numberOfLines={1} style={styles.letterSpacing0}>
-                  {item.category_name ?? "-"}
-                </Text>
+                <Chip
+                  compact
+                  style={{ ...(item.category_color && { backgroundColor: item.category_color }) }}>
+                  <Text
+                    variant="bodySmall"
+                    numberOfLines={1}
+                    style={[styles.letterSpacing0, styles.colorWhite]}>
+                    {item.category_name ?? "-"}
+                  </Text>
+                </Chip>
               </DataTable.Cell>
               <DataTable.Cell numeric>
                 <Text variant="bodySmall" numberOfLines={1} style={styles.letterSpacing0}>
@@ -115,5 +122,8 @@ const styles = StyleSheet.create({
   },
   textCenter: {
     textAlign: "center",
+  },
+  colorWhite: {
+    color: "white",
   },
 });

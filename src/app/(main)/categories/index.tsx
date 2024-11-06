@@ -19,6 +19,7 @@ export default function CategoriesScreen() {
     {
       id: number;
       name: string;
+      color: string | null;
     }[]
   >(categories ?? []);
 
@@ -64,15 +65,22 @@ export default function CategoriesScreen() {
                 <List.Item
                   key={category.id}
                   title={category.name}
+                  left={props => (
+                    <List.Icon
+                      {...props}
+                      color={typeof category.color === "string" ? category.color : "transparent"}
+                      icon="circle"
+                    />
+                  )}
                   right={() => (
                     <IconButton
                       icon="dots-horizontal"
                       size={20}
-                      onPress={() =>
+                      onPress={() => {
                         router.navigate(
-                          `/(main)/categories/details?queryId=${category.id}&queryName=${category.name}`,
-                        )
-                      }
+                          `/(main)/categories/details?queryId=${category.id}&queryName=${category.name}&queryColor=%23${category.color?.substring(1)}`,
+                        );
+                      }}
                     />
                   )}
                   onPress={() => {

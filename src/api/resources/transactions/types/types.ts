@@ -27,6 +27,7 @@ export type Transactions = TransactionRecord[] | undefined;
 
 export type TransactionRecord = {
   amount: number | null;
+  category_color: string | null;
   category_name: string | null;
   date: string | null;
   description: string | null;
