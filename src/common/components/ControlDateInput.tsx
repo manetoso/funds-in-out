@@ -39,6 +39,7 @@ export function ControlDateInput<T extends FieldValues>({
             onBlur={onBlur}
             onChange={onChange}
             value={value}
+            disabled={props.disabled}
           />
         )}
         name={name as Path<T>}

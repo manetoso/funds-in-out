@@ -8,7 +8,11 @@ import { router } from "expo-router";
 import { useCategoryStore } from "@/src/stores";
 
 export default function CategoriesScreen() {
-  const { categories, isErrorCategories, isLoadingCategories } = useFetchCategories();
+  const {
+    data: categories,
+    isError: isErrorCategories,
+    isFetching: isLoadingCategories,
+  } = useFetchCategories();
   const { setCurrentCategory } = useCategoryStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCategories, setFilteredCategories] = useState<

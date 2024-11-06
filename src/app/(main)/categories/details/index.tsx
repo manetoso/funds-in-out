@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { List, Text } from "react-native-paper";
@@ -17,6 +17,7 @@ export default function CategoryDetailsScreen() {
   const { queryId, queryName } = useLocalSearchParams<CategoryDetailsScreenParams>();
   const { addCategoryMutation, deleteCategoryMutation, updateCategoryMutation } =
     useMutateCategories();
+  const [isAnyMutationLoading, setIsAnyMutationLoading] = useState(false);
   const { currentCategory, setCurrentCategory } = useCategoryStore();
   const { showSnackbar } = useSnackbarStore();
   const [categoryId] = useState(Number(queryId));
@@ -50,6 +51,19 @@ export default function CategoryDetailsScreen() {
     showSnackbar("Tag deleted successfully");
     router.back();
   };
+
+  useEffect(() => {
+    const isLoading =
+      addCategoryMutation.isLoading ||
+      deleteCategoryMutation.isLoading ||
+      updateCategoryMutation.isLoading;
+
+    setIsAnyMutationLoading(isLoading);
+  }, [
+    addCategoryMutation.isLoading,
+    deleteCategoryMutation.isLoading,
+    updateCategoryMutation.isLoading,
+  ]);
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -61,6 +75,7 @@ export default function CategoryDetailsScreen() {
         name="name"
         required
         onSubmitEditing={handleSubmit(handleFormSubmit)}
+        disabled={isAnyMutationLoading}
       />
       <Text variant="labelSmall">Options</Text>
       <List.Section>
@@ -68,6 +83,7 @@ export default function CategoryDetailsScreen() {
           title="Delete Category"
           left={props => <List.Icon {...props} icon="delete" />}
           onPress={handleDelete}
+          disabled={isAnyMutationLoading}
         />
       </List.Section>
     </KeyboardAvoidingView>

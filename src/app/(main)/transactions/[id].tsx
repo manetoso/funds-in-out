@@ -51,10 +51,15 @@ export default function SingleTransactionScreen() {
   const { id, queryAmount, queryCategory, queryDate, queryDescription, queryType } =
     useLocalSearchParams<SingleTransactionScreenParams>();
   const navigation = useNavigation();
-  const { categories, isErrorCategories, isLoadingCategories } = useFetchCategories();
+  const {
+    data: categories,
+    isError: isErrorCategories,
+    isFetching: isLoadingCategories,
+  } = useFetchCategories();
   const { addTransactionMutation } = useAddTransactions();
   const { deleteTransactionMutation } = useDeleteTransactions();
   const { updateTransactionMutation } = useUpdateTransactions();
+  const [isAnyMutationLoading, setIsAnyMutationLoading] = useState(false);
   const { currentCategory, setCurrentCategory } = useCategoryStore();
   const { showSnackbar } = useSnackbarStore();
   const [transactionId] = useState(Number(id));
@@ -92,6 +97,19 @@ export default function SingleTransactionScreen() {
     setCurrentCategory("");
     router.replace("/(main)/(tabs)");
   };
+
+  useEffect(() => {
+    const isLoading =
+      addTransactionMutation.isLoading ||
+      deleteTransactionMutation.isLoading ||
+      updateTransactionMutation.isLoading;
+
+    setIsAnyMutationLoading(isLoading);
+  }, [
+    addTransactionMutation.isLoading,
+    deleteTransactionMutation.isLoading,
+    updateTransactionMutation.isLoading,
+  ]);
 
   useEffect(() => {
     if (currentCategory) setValue("category", currentCategory);
@@ -133,6 +151,7 @@ export default function SingleTransactionScreen() {
           <Switch.Default>
             <ControlTextInput<TransactionFormValues>
               control={control}
+              disabled={isAnyMutationLoading}
               error={!!errors.amount}
               keyboardType="numeric"
               label="Amount"
@@ -142,16 +161,18 @@ export default function SingleTransactionScreen() {
             />
             <ControlTextInput<TransactionFormValues>
               control={control}
+              disabled={isAnyMutationLoading}
               error={!!errors.category}
               label="Category"
               name="category"
-              required
               onPress={() => {
                 router.push("/(main)/categories");
               }}
+              required
             />
             <ControlDateInput<TransactionFormValues>
               control={control}
+              disabled={isAnyMutationLoading}
               error={!!errors.date}
               label="Date"
               name="date"
@@ -159,6 +180,7 @@ export default function SingleTransactionScreen() {
             />
             <ControlTextInput<TransactionFormValues>
               control={control}
+              disabled={isAnyMutationLoading}
               error={!!errors.description}
               label="Source"
               multiline
@@ -169,13 +191,15 @@ export default function SingleTransactionScreen() {
             <ControlSelectInput<TransactionFormValues>
               control={control}
               data={TRNSACTION_TYPES}
+              disabled={isAnyMutationLoading}
               error={!!errors.type}
               label="Tag"
               name="type"
               required
             />
             <Button
-              loading={isLoadingCategories}
+              loading={isLoadingCategories || isAnyMutationLoading}
+              disabled={isLoadingCategories || isAnyMutationLoading}
               onPress={handleSubmit(handleFormSubmit)}
               mode="contained">
               {transactionId !== 0 ? "Update" : "Add"}
@@ -188,7 +212,14 @@ export default function SingleTransactionScreen() {
         !isLoadingCategories &&
         !isErrorCategories &&
         typeof categories !== "undefined" && (
-          <FAB icon="delete" size="small" style={styles.fab} onPress={handleDelete} />
+          <FAB
+            icon="delete"
+            size="small"
+            style={styles.fab}
+            onPress={handleDelete}
+            loading={isAnyMutationLoading}
+            disabled={isAnyMutationLoading}
+          />
         )}
     </KeyboardAvoidingView>
   );
