@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { List, Text } from "react-native-paper";
 import { SubmitHandler, useForm } from "react-hook-form";
+import ColorPicker, {
+  Panel1,
+  Preview,
+  HueCircular,
+  type returnedResults,
+} from "reanimated-color-picker";
 
-import { ControlTextInput } from "@/src/common/components";
+import { ControlColorPicker, ControlTextInput } from "@/src/common/components";
 import { useMutateCategories } from "@/src/features/categories/hooks";
 import { useCategoryStore, useSnackbarStore } from "@/src/stores";
 import { type Category } from "@/src/api/resources/categories/types/types";
@@ -80,10 +86,10 @@ export default function CategoryDetailsScreen() {
         onSubmitEditing={handleSubmit(handleFormSubmit)}
         disabled={isAnyMutationLoading}
       />
-      <ControlTextInput<Omit<Category, "id">>
+      <ControlColorPicker<Omit<Category, "id">>
         control={control}
-        error={!!errors.name}
-        label="Tag color"
+        error={!!errors.color}
+        label="Tag Color"
         name="color"
         required
         onSubmitEditing={handleSubmit(handleFormSubmit)}
@@ -117,14 +123,5 @@ const styles = StyleSheet.create({
   },
   alignCenter: {
     alignItems: "center",
-  },
-  justifyCenter: {
-    justifyContent: "center",
-  },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
   },
 });

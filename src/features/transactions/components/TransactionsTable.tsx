@@ -8,6 +8,7 @@ import {
   TransactionType,
   type Transactions,
 } from "@/src/api/resources/transactions/types/types";
+import { getContrastColor } from "@/src/common/utils";
 
 type TransactionsTableProps = {
   isLoading: boolean;
@@ -79,7 +80,10 @@ export const TransactionsTable = ({ isLoading, transactions, type }: Transaction
                   <Text
                     variant="bodySmall"
                     numberOfLines={1}
-                    style={[styles.letterSpacing0, styles.colorWhite]}>
+                    style={[
+                      styles.letterSpacing0,
+                      { color: getContrastColor(item.category_color ?? "#000") },
+                    ]}>
                     {item.category_name ?? "-"}
                   </Text>
                 </Chip>
