@@ -7,5 +7,6 @@ export const useFetchCategories = () => {
     queryKey: "categories",
     queryFn: fetchCategories(),
     cacheTime: 7200000,
+    staleTime: 7200000,
   });
 };

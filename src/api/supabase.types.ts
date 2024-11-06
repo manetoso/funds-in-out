@@ -117,7 +117,14 @@ export type Database = {
         Args: {
           id_input: number;
         };
-        Returns: boolean;
+        Returns: {
+          amount: number;
+          category_id: number | null;
+          date: string;
+          description: string | null;
+          id: number;
+          type: string;
+        };
       };
       get_expense_transactions: {
         Args: {

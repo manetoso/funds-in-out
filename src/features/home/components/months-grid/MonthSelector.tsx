@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Chip, Divider, Menu } from "react-native-paper";
 
-import { useAsyncStorage } from "@/src/common/hooks/useAsyncStorage";
+import { useAsyncStorage } from "@/src/common/hooks";
 import { MONTHS_ARRAY } from "@/src/common/constants/dates";
 import { Months } from "@/src/common/types/date";
 

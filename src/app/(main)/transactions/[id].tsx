@@ -5,11 +5,7 @@ import { Button, FAB, Text } from "react-native-paper";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import { useFetchCategories } from "@/src/features/categories/hooks/useFetchCategories";
-import {
-  useAddTransactions,
-  useDeleteTransactions,
-  useUpdateTransactions,
-} from "@/src/features/transactions/hooks";
+import { useMutateTransactions } from "@/src/features/transactions/hooks";
 import { MapTransactionFormToAPI } from "@/src/features/transactions/utils/map-transaction-form-to-api";
 import {
   ControlDateInput,
@@ -56,9 +52,8 @@ export default function SingleTransactionScreen() {
     isError: isErrorCategories,
     isFetching: isLoadingCategories,
   } = useFetchCategories();
-  const { addTransactionMutation } = useAddTransactions();
-  const { deleteTransactionMutation } = useDeleteTransactions();
-  const { updateTransactionMutation } = useUpdateTransactions();
+  const { addTransactionMutation, deleteTransactionMutation, updateTransactionMutation } =
+    useMutateTransactions();
   const [isAnyMutationLoading, setIsAnyMutationLoading] = useState(false);
   const { currentCategory, setCurrentCategory } = useCategoryStore();
   const { showSnackbar } = useSnackbarStore();
@@ -88,14 +83,14 @@ export default function SingleTransactionScreen() {
       showSnackbar("Transaction updated successfully");
     }
     setCurrentCategory("");
-    router.replace("/(main)/(tabs)");
+    router.back();
   };
 
   const handleDelete = async () => {
     await deleteTransactionMutation.mutateAsync({ id: transactionId });
     showSnackbar("Transaction deleted successfully");
     setCurrentCategory("");
-    router.replace("/(main)/(tabs)");
+    router.back();
   };
 
   useEffect(() => {

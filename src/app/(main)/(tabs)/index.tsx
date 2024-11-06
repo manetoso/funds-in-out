@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 
-import { useAsyncStorage } from "@/src/common/hooks/useAsyncStorage";
+import { useAsyncStorage } from "@/src/common/hooks";
 import { useFetchTransactions } from "@/src/features/transactions/hooks/useFetchTransactions";
 import { MonthAccordion, MonthSelector } from "@/src/features/home/components/months-grid";
 import { TransactionsTable } from "@/src/features/transactions/components";
@@ -9,7 +9,9 @@ import { Months } from "@/src/common/types/date";
 import { TransactionType } from "@/src/api/resources/transactions/types/types";
 
 export default function HomeScreen() {
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(Months.January);
+  const { getItem } = useAsyncStorage();
   const {
     expenseData,
     expenseIsLoading,
@@ -18,8 +20,6 @@ export default function HomeScreen() {
     refetchExpense,
     refetchIncome,
   } = useFetchTransactions(selectedMonth);
-  const { getItem } = useAsyncStorage();
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const getSelectedMonth = useCallback(async () => {
     const sotredSelectedMonth = await getItem("selectedMonth");
@@ -36,14 +36,6 @@ export default function HomeScreen() {
   useEffect(() => {
     getSelectedMonth();
   }, [getSelectedMonth]);
-
-  // RE-FETCH FROM router.back() but not working 100% of the time
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     refetchExpense();
-  //     refetchIncome();
-  //   }, [refetchExpense, refetchIncome]),
-  // );
   return (
     <ScrollView
       refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefreshControl} />}

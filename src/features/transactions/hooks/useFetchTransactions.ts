@@ -13,6 +13,7 @@ export const useFetchTransactions = (selectedMonth: Months) => {
     queryKey: [selectedMonth, TransactionType.Income, "transactions"],
     queryFn: fetchMonthlyTransactions({ month: selectedMonth, type: TransactionType.Income }),
     cacheTime: 7200000,
+    staleTime: 7200000,
   });
   const {
     data: expenseData,
@@ -22,6 +23,7 @@ export const useFetchTransactions = (selectedMonth: Months) => {
     queryKey: [selectedMonth, TransactionType.Expense, "transactions"],
     queryFn: fetchMonthlyTransactions({ month: selectedMonth, type: TransactionType.Expense }),
     cacheTime: 7200000,
+    staleTime: 7200000,
   });
 
   return {

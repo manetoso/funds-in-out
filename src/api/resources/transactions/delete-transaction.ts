@@ -3,7 +3,7 @@ import { supabase } from "../../supabase-client";
 import { type UpdateTransaction } from "./types/types";
 
 export const deleteTransaction = async ({ id }: Pick<UpdateTransaction, "id">) => {
-  const { error, status } = await supabase.rpc("delete_transaction", {
+  const { data, error, status } = await supabase.rpc("delete_transaction", {
     id_input: id,
   });
   if (error) {
@@ -15,7 +15,7 @@ export const deleteTransaction = async ({ id }: Pick<UpdateTransaction, "id">) =
         id,
       },
     });
-    return false;
+    return null;
   }
-  return true;
+  return data;
 };
