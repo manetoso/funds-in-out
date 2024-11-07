@@ -5,7 +5,7 @@ type CategoryState = {
   setCurrentCategory: (category: string) => void;
 };
 
-export const useCategoryStore = create<CategoryState>(set => ({
+export const useCategoryStore = create<CategoryState>()(set => ({
   currentCategory: "",
   setCurrentCategory: (category: string) => set({ currentCategory: category }),
 }));

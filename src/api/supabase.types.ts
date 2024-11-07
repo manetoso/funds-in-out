@@ -113,6 +113,16 @@ export type Database = {
               name: string;
             }[];
           };
+      add_transaction: {
+        Args: {
+          amount_input: number;
+          category_id_input: number;
+          date_input: string;
+          description_input: string;
+          type_input: string;
+        };
+        Returns: Database["public"]["CompositeTypes"]["transaction_details"][];
+      };
       delete_category: {
         Args: {
           id_input: number;
@@ -145,6 +155,17 @@ export type Database = {
           end_date: string;
         };
         Returns: Database["public"]["CompositeTypes"]["transaction_details"][];
+      };
+      get_transaction_totals_by_month: {
+        Args: {
+          start_date: string;
+          end_date: string;
+        };
+        Returns: {
+          total_income: number;
+          total_expense: number;
+          balance: number;
+        }[];
       };
       update_category:
         | {

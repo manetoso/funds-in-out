@@ -23,6 +23,12 @@ export enum TransactionType {
   Income = "income",
 }
 
+export type TransactionTotals = {
+  total_income: number;
+  total_expense: number;
+  balance: number;
+};
+
 export type Transactions = TransactionRecord[] | undefined;
 
 export type TransactionRecord = {

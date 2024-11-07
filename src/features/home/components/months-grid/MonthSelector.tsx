@@ -4,14 +4,10 @@ import { Chip, Divider, Menu } from "react-native-paper";
 
 import { useAsyncStorage } from "@/src/common/hooks";
 import { MONTHS_ARRAY } from "@/src/common/constants/dates";
-import { Months } from "@/src/common/types/date";
+import { useDashboardStore } from "@/src/stores";
 
-type MonthSelectorProps = {
-  selectedMonth: string;
-  setSelectedMonth: React.Dispatch<React.SetStateAction<Months>>;
-};
-
-export const MonthSelector = ({ selectedMonth, setSelectedMonth }: MonthSelectorProps) => {
+export const MonthSelector = () => {
+  const { selectedMonth, setSelectedMonth } = useDashboardStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { setItem } = useAsyncStorage();
 

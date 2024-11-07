@@ -7,7 +7,7 @@ type SnackBarState = {
   hideSnackbar: () => void;
 };
 
-export const useSnackbarStore = create<SnackBarState>(set => ({
+export const useSnackbarStore = create<SnackBarState>()(set => ({
   isOpen: false,
   message: "",
   showSnackbar: (message, secs = 3) => {
