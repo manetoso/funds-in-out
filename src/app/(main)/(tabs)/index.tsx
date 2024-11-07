@@ -1,17 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 
-import { useAsyncStorage } from "@/src/common/hooks";
-import { useFetchTransactions } from "@/src/features/transactions/hooks/useFetchTransactions";
+import { useDashboardStore } from "@/src/stores";
+import { useFetchTransactionTotal, useFetchTransactions } from "@/src/features/transactions/hooks";
 import { MonthAccordion, MonthSelector } from "@/src/features/home/components/months-grid";
+import { MonthTotal } from "@/src/features/home/components/month-totals";
 import { TransactionsTable } from "@/src/features/transactions/components";
-import { Months } from "@/src/common/types/date";
 import { TransactionType } from "@/src/api/resources/transactions/types/types";
 
 export default function HomeScreen() {
+  const { selectedMonth } = useDashboardStore();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState(Months.January);
-  const { getItem } = useAsyncStorage();
   const {
     expenseData,
     expenseIsLoading,
@@ -20,27 +19,30 @@ export default function HomeScreen() {
     refetchExpense,
     refetchIncome,
   } = useFetchTransactions(selectedMonth);
-
-  const getSelectedMonth = useCallback(async () => {
-    const sotredSelectedMonth = await getItem("selectedMonth");
-    if (sotredSelectedMonth) setSelectedMonth(sotredSelectedMonth as Months);
-  }, [getItem]);
+  const {
+    data: tansactionsTotals,
+    isFetching: isLoadingTansactionsTotals,
+    isError: isErrorTansactionsTotals,
+    refetch: refetchTansactionsTotals,
+  } = useFetchTransactionTotal(selectedMonth);
 
   const handleRefreshControl = async () => {
     setIsRefreshing(true);
+    await refetchTansactionsTotals();
     await refetchExpense();
     await refetchIncome();
     setIsRefreshing(false);
   };
-
-  useEffect(() => {
-    getSelectedMonth();
-  }, [getSelectedMonth]);
   return (
     <ScrollView
       refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefreshControl} />}
       contentContainerStyle={[styles.padding32, styles.gap16, styles.mT20]}>
-      <MonthSelector selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
+      <MonthSelector />
+      <MonthTotal
+        isError={isErrorTansactionsTotals}
+        isLoading={isLoadingTansactionsTotals}
+        totals={tansactionsTotals}
+      />
       <MonthAccordion
         selectedMonth={selectedMonth}
         title="Income"

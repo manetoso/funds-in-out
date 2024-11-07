@@ -2,6 +2,8 @@ import { useQuery } from "react-query";
 import { Months } from "@/src/common/types/date";
 import { fetchTransactionsTotalsByMonth } from "@/src/api/resources/transactions/fetch-transaction-totals-by-month";
 
+// TODO: Invalidate cache
+
 export const useFetchTransactionTotal = (selectedMonth: Months) => {
   return useQuery({
     queryKey: [selectedMonth, "transactions-totals"],
