@@ -8,7 +8,7 @@ export const useMutateTransactions = () => {
 
   const addTransactionMutation = useMutation(addTransaction, {
     onSuccess: (_, variables) => {
-      const month = getMonthFromDate(new Date(variables.date));
+      const month = getMonthFromDate(variables.date);
       log.info("onSuccess addTransactionMutation", {
         variables,
         month,
@@ -20,7 +20,7 @@ export const useMutateTransactions = () => {
   });
   const deleteTransactionMutation = useMutation(deleteTransaction, {
     onSuccess: data => {
-      const month = getMonthFromDate(new Date(data!.date));
+      const month = getMonthFromDate(new Date(data!.date).toISOString().split("T")[0]);
       log.info("onSuccess deleteTransactionMutation", {
         data,
         month,
@@ -32,7 +32,7 @@ export const useMutateTransactions = () => {
   });
   const updateTransactionMutation = useMutation(updateTransaction, {
     onSuccess: (_, variables) => {
-      const month = getMonthFromDate(new Date(variables.data.date));
+      const month = getMonthFromDate(variables.data.date);
       log.info("onSuccess updateTransactionMutation", {
         variables,
         month,
