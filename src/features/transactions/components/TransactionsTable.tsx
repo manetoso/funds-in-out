@@ -8,7 +8,7 @@ import {
   TransactionType,
   type Transactions,
 } from "@/src/api/resources/transactions/types/types";
-import { getContrastColor } from "@/src/common/utils";
+import { formatCurrency, getContrastColor } from "@/src/common/utils";
 
 type TransactionsTableProps = {
   isLoading: boolean;
@@ -90,7 +90,7 @@ export const TransactionsTable = ({ isLoading, transactions, type }: Transaction
               </DataTable.Cell>
               <DataTable.Cell numeric>
                 <Text variant="bodySmall" numberOfLines={1} style={styles.letterSpacing0}>
-                  {item.amount}
+                  {formatCurrency(item.amount ?? 0)}
                 </Text>
               </DataTable.Cell>
             </DataTable.Row>

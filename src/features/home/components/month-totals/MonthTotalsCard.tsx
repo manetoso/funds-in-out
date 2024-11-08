@@ -2,6 +2,7 @@ import { View, StyleSheet } from "react-native";
 import { Icon, Surface, Text } from "react-native-paper";
 
 import { TransactionTotals } from "@/src/api/resources/transactions/types/types";
+import { formatCurrency } from "@/src/common/utils";
 
 type MonthTotalsCardProps = TransactionTotals;
 
@@ -14,7 +15,7 @@ export const MonthTotalsCard = ({ balance, total_expense, total_income }: MonthT
         </Text>
       </View>
       <View style={[styles.mT8, styles.mB8]}>
-        <Text variant="headlineMedium">{balance ?? 0}</Text>
+        <Text variant="headlineMedium">{formatCurrency(balance ?? 0)}</Text>
       </View>
       <View style={[styles.flexRow, styles.alignCenter, styles.justifyBetween]}>
         <View>
@@ -22,7 +23,7 @@ export const MonthTotalsCard = ({ balance, total_expense, total_income }: MonthT
             <Icon source="arrow-down-circle" size={16} />
             <Text variant="bodyLarge">Income</Text>
           </View>
-          <Text variant="bodySmall">{total_income ?? 0}</Text>
+          <Text variant="bodySmall">{formatCurrency(total_income ?? 0)}</Text>
         </View>
         <View>
           <View style={[styles.flexRow, styles.alignCenter, styles.gap8]}>
@@ -32,7 +33,7 @@ export const MonthTotalsCard = ({ balance, total_expense, total_income }: MonthT
             </Text>
           </View>
           <Text variant="bodySmall" style={styles.textRight}>
-            {total_expense ?? 0}
+            {formatCurrency(total_expense ?? 0)}
           </Text>
         </View>
       </View>
