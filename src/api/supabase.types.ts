@@ -91,28 +91,17 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      add_category:
-        | {
-            Args: {
-              name_input: string;
-            };
-            Returns: {
-              color: string | null;
-              id: number;
-              name: string;
-            }[];
-          }
-        | {
-            Args: {
-              name_input: string;
-              color_input: string;
-            };
-            Returns: {
-              color: string | null;
-              id: number;
-              name: string;
-            }[];
-          };
+      add_category: {
+        Args: {
+          name_input: string;
+          color_input: string;
+        };
+        Returns: {
+          color: string | null;
+          id: number;
+          name: string;
+        }[];
+      };
       add_transaction: {
         Args: {
           amount_input: number;
@@ -167,30 +156,18 @@ export type Database = {
           balance: number;
         }[];
       };
-      update_category:
-        | {
-            Args: {
-              id_input: number;
-              name_input: string;
-            };
-            Returns: {
-              color: string | null;
-              id: number;
-              name: string;
-            }[];
-          }
-        | {
-            Args: {
-              id_input: number;
-              name_input: string;
-              color_input: string;
-            };
-            Returns: {
-              color: string | null;
-              id: number;
-              name: string;
-            }[];
-          };
+      update_category: {
+        Args: {
+          id_input: number;
+          name_input: string;
+          color_input: string;
+        };
+        Returns: {
+          color: string | null;
+          id: number;
+          name: string;
+        }[];
+      };
       update_transaction: {
         Args: {
           id_input: number;
