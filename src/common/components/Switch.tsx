@@ -1,28 +1,32 @@
-import React, { FC, ReactElement } from "react";
+import React, { FC, ReactElement, PropsWithChildren } from "react";
 
-interface Props {
-  children: React.ReactElement | React.ReactElement[];
+interface CaseProps extends PropsWithChildren {
+  condition: boolean;
 }
 
-const Case: FC<Props & { condition: boolean }> = ({ children }) => children;
+const Case: FC<CaseProps> = ({ children }) => <>{children}</>;
 
-const Default: FC<Props> = ({ children }) => children;
+const Default: FC<PropsWithChildren> = ({ children }) => <>{children}</>;
 
-const Switch: FC<Props> & { Case: typeof Case; Default: typeof Default } = ({ children }) => {
+const Switch: FC<PropsWithChildren> & { Case: typeof Case; Default: typeof Default } = ({
+  children,
+}) => {
   let matchChild: ReactElement | null = null;
   let defaultCase: ReactElement | null = null;
 
   React.Children.forEach(children, child => {
-    if (!matchChild && child.type === Case) {
-      const { condition } = child.props;
+    if (React.isValidElement(child)) {
+      if (!matchChild && child.type === Case) {
+        const { condition } = child.props as CaseProps;
 
-      const conditionResult = Boolean(condition);
+        const conditionResult = Boolean(condition);
 
-      if (conditionResult) {
-        matchChild = child;
+        if (conditionResult) {
+          matchChild = child;
+        }
+      } else if (!defaultCase && child.type === Default) {
+        defaultCase = child;
       }
-    } else if (!defaultCase && child.type === Default) {
-      defaultCase = child;
     }
   });
 

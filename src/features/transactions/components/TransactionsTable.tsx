@@ -48,7 +48,7 @@ export const TransactionsTable = ({ isLoading, transactions, type }: Transaction
             </DataTable.Cell>
           </DataTable.Row>
         </Switch.Case>
-        <Switch.Case condition={typeof transactions === "undefined" || transactions.length === 0}>
+        <Switch.Case condition={!transactions || transactions.length === 0}>
           <DataTable.Row style={styles.tableRow}>
             <DataTable.Cell style={styles.flexJustifyCenter}>
               <Text
@@ -61,7 +61,7 @@ export const TransactionsTable = ({ isLoading, transactions, type }: Transaction
           </DataTable.Row>
         </Switch.Case>
         <Switch.Default>
-          {transactions!.map(item => (
+          {transactions?.map(item => (
             <DataTable.Row
               key={item.id}
               style={styles.tableRow}
