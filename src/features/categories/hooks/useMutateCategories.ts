@@ -7,6 +7,9 @@ export const useMutateCategories = () => {
 
   const invalidateCategories = () => {
     queryClient.invalidateQueries("categories");
+    queryClient.invalidateQueries({
+      predicate: query => query.queryKey.includes("transactions"),
+    });
   };
 
   const addCategoryMutation = useMutation(addCategory, {

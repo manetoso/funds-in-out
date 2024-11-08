@@ -191,6 +191,17 @@ export type Database = {
               name: string;
             }[];
           };
+      update_transaction: {
+        Args: {
+          id_input: number;
+          amount_input: number;
+          category_id_input: number;
+          date_input: string;
+          description_input: string;
+          type_input: string;
+        };
+        Returns: Database["public"]["CompositeTypes"]["transaction_details"][];
+      };
     };
     Enums: {
       [_ in never]: never;

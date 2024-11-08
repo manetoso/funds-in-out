@@ -1,14 +1,8 @@
 import { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { List, Text } from "react-native-paper";
 import { SubmitHandler, useForm } from "react-hook-form";
-import ColorPicker, {
-  Panel1,
-  Preview,
-  HueCircular,
-  type returnedResults,
-} from "reanimated-color-picker";
 
 import { ControlColorPicker, ControlTextInput } from "@/src/common/components";
 import { useMutateCategories } from "@/src/features/categories/hooks";

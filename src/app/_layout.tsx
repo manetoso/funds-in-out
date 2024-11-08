@@ -20,9 +20,11 @@ registerTranslation("en-GB", enGB);
 
 /*
   TODO LIST:
-  - Use BottomNavigation from react-native-paper
-  - Use Appbar from react-native-paper
-  - Update categpries table to include color
+  - Work in UI
+    - Use BottomNavigation from react-native-paper
+    - Use Appbar from react-native-paper
+  - Add graphs of expenses and incomes in the main screen
+  - Add graphs to history/statistics
 */
 
 export default function RootLayout() {
