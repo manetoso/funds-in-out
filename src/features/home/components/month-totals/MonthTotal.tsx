@@ -1,8 +1,6 @@
-import { Text } from "react-native-paper";
-
-import { Switch } from "@/src/common/components";
-import { TransactionTotals } from "@/src/api/resources/transactions/types/types";
+import { Skeleton, Switch } from "@/src/common/components";
 import { MonthTotalsCard } from "./MonthTotalsCard";
+import { type TransactionTotals } from "@/src/api/resources/transactions/types/types";
 
 type MonthsTotalsProps = {
   isError: boolean;
@@ -10,13 +8,11 @@ type MonthsTotalsProps = {
   totals: TransactionTotals | null | undefined;
 };
 
-// TODO: Add loader
-
 export const MonthTotal = ({ isError, isLoading, totals }: MonthsTotalsProps) => {
   return (
     <Switch>
       <Switch.Case condition={isLoading}>
-        <Text>Loading...</Text>
+        <Skeleton width="100%" height={150} borderRadius={14} />
       </Switch.Case>
       <Switch.Case condition={isError}>
         <MonthTotalsCard balance={0} total_expense={0} total_income={0} />
