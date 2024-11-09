@@ -35,8 +35,10 @@ export default function HomeScreen() {
   };
   return (
     <ScrollView
-      refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefreshControl} />}
-      contentContainerStyle={[styles.padding32, styles.gap16, styles.mT20]}>
+      contentContainerStyle={[styles.padding32, styles.gap16, styles.mT20]}
+      refreshControl={
+        <RefreshControl refreshing={isRefreshing} onRefresh={handleRefreshControl} />
+      }>
       <MonthSelector />
       <MonthTotal
         isError={isErrorTansactionsTotals}

@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { Href, router } from "expo-router";
 import { ActivityIndicator, Button, Chip, DataTable, Text } from "react-native-paper";
 
@@ -61,40 +61,49 @@ export const TransactionsTable = ({ isLoading, transactions, type }: Transaction
           </DataTable.Row>
         </Switch.Case>
         <Switch.Default>
-          {transactions?.map(item => (
-            <DataTable.Row
-              key={item.id}
-              style={styles.tableRow}
-              onPress={() => {
-                handleEditTransaction(item);
-              }}>
-              <DataTable.Cell style={styles.tableCellBig}>
-                <Text variant="bodySmall" numberOfLines={1} style={styles.letterSpacing0}>
-                  {item.description}
-                </Text>
-              </DataTable.Cell>
-              <DataTable.Cell style={styles.tableCellBig}>
-                <Chip
-                  compact
-                  style={{ ...(item.category_color && { backgroundColor: item.category_color }) }}>
-                  <Text
-                    variant="bodySmall"
-                    numberOfLines={1}
-                    style={[
-                      styles.letterSpacing0,
-                      { color: getContrastColor(item.category_color ?? "#000") },
-                    ]}>
-                    {item.category_name ?? "-"}
-                  </Text>
-                </Chip>
-              </DataTable.Cell>
-              <DataTable.Cell numeric>
-                <Text variant="bodySmall" numberOfLines={1} style={styles.letterSpacing0}>
-                  {formatCurrency(item.amount ?? 0)}
-                </Text>
-              </DataTable.Cell>
-            </DataTable.Row>
-          ))}
+          <View style={styles.flex1}>
+            <FlatList
+              data={transactions}
+              keyExtractor={item => item.id?.toString() ?? ""}
+              nestedScrollEnabled
+              renderItem={({ item }) => (
+                <DataTable.Row
+                  key={item.id}
+                  style={styles.tableRow}
+                  onPress={() => {
+                    handleEditTransaction(item);
+                  }}>
+                  <DataTable.Cell style={styles.tableCellBig}>
+                    <Text variant="bodySmall" numberOfLines={1} style={styles.letterSpacing0}>
+                      {item.description}
+                    </Text>
+                  </DataTable.Cell>
+                  <DataTable.Cell style={styles.tableCellBig}>
+                    <Chip
+                      compact
+                      style={{
+                        ...(item.category_color && { backgroundColor: item.category_color }),
+                      }}>
+                      <Text
+                        variant="bodySmall"
+                        numberOfLines={1}
+                        style={[
+                          styles.letterSpacing0,
+                          { color: getContrastColor(item.category_color ?? "#000") },
+                        ]}>
+                        {item.category_name ?? "-"}
+                      </Text>
+                    </Chip>
+                  </DataTable.Cell>
+                  <DataTable.Cell numeric>
+                    <Text variant="bodySmall" numberOfLines={1} style={styles.letterSpacing0}>
+                      {formatCurrency(item.amount ?? 0)}
+                    </Text>
+                  </DataTable.Cell>
+                </DataTable.Row>
+              )}
+            />
+          </View>
         </Switch.Default>
       </Switch>
 
@@ -129,5 +138,8 @@ const styles = StyleSheet.create({
   },
   colorWhite: {
     color: "white",
+  },
+  flex1: {
+    flex: 1,
   },
 });

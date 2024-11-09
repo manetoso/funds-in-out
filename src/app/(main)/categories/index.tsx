@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
+import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import { FAB, IconButton, List, Searchbar, Text } from "react-native-paper";
 
 import { useFetchCategories } from "@/src/features/categories/hooks/useFetchCategories";
@@ -51,7 +51,7 @@ export default function CategoriesScreen() {
       style={[styles.flex1]}>
       <Searchbar placeholder="Search" mode="view" onChangeText={handleSearch} value={searchQuery} />
       <Text variant="labelSmall">Select an option or create one</Text>
-      <ScrollView contentContainerStyle={[styles.flexGrow1, styles.pB40]}>
+      <View style={[styles.flexGrow1, styles.pB140]}>
         <Switch>
           <Switch.Case condition={isLoadingCategories}>
             <ScreenLoader />
@@ -61,38 +61,41 @@ export default function CategoriesScreen() {
           </Switch.Case>
           <Switch.Default>
             <List.Section>
-              {filteredCategories.map(category => (
-                <List.Item
-                  key={category.id}
-                  title={category.name}
-                  left={props => (
-                    <List.Icon
-                      {...props}
-                      color={typeof category.color === "string" ? category.color : "transparent"}
-                      icon="circle"
-                    />
-                  )}
-                  right={() => (
-                    <IconButton
-                      icon="dots-horizontal"
-                      size={20}
-                      onPress={() => {
-                        router.navigate(
-                          `/(main)/categories/details?queryId=${category.id}&queryName=${category.name}&queryColor=%23${category.color?.substring(1)}`,
-                        );
-                      }}
-                    />
-                  )}
-                  onPress={() => {
-                    setCurrentCategory(category.name);
-                    router.back();
-                  }}
-                />
-              ))}
+              <FlatList
+                data={filteredCategories}
+                keyExtractor={item => item.id.toString()}
+                renderItem={({ item }) => (
+                  <List.Item
+                    title={item.name}
+                    left={props => (
+                      <List.Icon
+                        {...props}
+                        color={typeof item.color === "string" ? item.color : "transparent"}
+                        icon="circle"
+                      />
+                    )}
+                    right={() => (
+                      <IconButton
+                        icon="dots-horizontal"
+                        size={20}
+                        onPress={() => {
+                          router.navigate(
+                            `/(main)/categories/details?queryId=${item.id}&queryName=${item.name}&queryColor=%23${item.color?.substring(1)}`,
+                          );
+                        }}
+                      />
+                    )}
+                    onPress={() => {
+                      setCurrentCategory(item.name);
+                      router.back();
+                    }}
+                  />
+                )}
+              />
             </List.Section>
           </Switch.Default>
         </Switch>
-      </ScrollView>
+      </View>
 
       {!isLoadingCategories && !isErrorCategories && typeof categories !== "undefined" && (
         <FAB icon="plus" size="small" style={styles.fab} onPress={handleFABPress} />
@@ -111,8 +114,8 @@ const styles = StyleSheet.create({
   padding32: {
     padding: 32,
   },
-  pB40: {
-    paddingBottom: 40,
+  pB140: {
+    paddingBottom: 140,
   },
   gap16: {
     gap: 16,

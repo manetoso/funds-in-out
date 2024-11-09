@@ -9,10 +9,9 @@ type MonthTotalsCardProps = TransactionTotals;
 export const MonthTotalsCard = ({ balance, total_expense, total_income }: MonthTotalsCardProps) => {
   return (
     <Surface style={[styles.surface]} elevation={4}>
-      <View>
-        <Text variant="bodyLarge">
-          Total Balance <Icon source={balance > 0 ? "chevron-up" : "chevron-down"} size={16} />
-        </Text>
+      <View style={[styles.flexRow, styles.alignCenter, styles.gap4]}>
+        <Text variant="bodyLarge">Total Balance</Text>
+        <Icon source={balance > 0 ? "chevron-up" : "chevron-down"} size={16} />
       </View>
       <View style={[styles.mT8, styles.mB8]}>
         <Text variant="headlineMedium">{formatCurrency(balance ?? 0)}</Text>
@@ -63,6 +62,9 @@ const styles = StyleSheet.create({
   },
   textRight: {
     textAlign: "right",
+  },
+  gap4: {
+    gap: 4,
   },
   gap8: {
     gap: 8,

@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-na
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { Button, FAB, Text } from "react-native-paper";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { parseISO } from "date-fns";
 
 import { useFetchCategories } from "@/src/features/categories/hooks/useFetchCategories";
 import { useMutateTransactions } from "@/src/features/transactions/hooks";
@@ -66,7 +67,7 @@ export default function SingleTransactionScreen() {
   } = useForm<TransactionFormValues>({
     defaultValues: {
       category: queryCategory ?? currentCategory,
-      date: queryDate ? new Date(queryDate) : new Date(),
+      date: queryDate ? parseISO(queryDate) : new Date(),
       description: queryDescription ?? "",
       type: queryType ? queryType.charAt(0).toUpperCase() + queryType.slice(1) : "",
       ...(queryAmount && { amount: queryAmount }),

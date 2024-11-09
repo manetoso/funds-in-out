@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import { Chip, Divider, Menu } from "react-native-paper";
 
 import { useAsyncStorage } from "@/src/common/hooks";
@@ -20,27 +20,35 @@ export const MonthSelector = () => {
   return (
     <View style={styles.listTitleWrapper}>
       <Menu
-        visible={isMenuOpen}
-        onDismiss={closeMenu}
         anchor={
           <Chip icon="calendar" onPress={openMenu}>
             {selectedMonth}
           </Chip>
-        }>
+        }
+        anchorPosition="bottom"
+        onDismiss={closeMenu}
+        style={styles.h80}
+        visible={isMenuOpen}>
         <Chip onPress={closeMenu}>{selectedMonth}</Chip>
         <Divider />
-        {MONTHS_ARRAY.map(month => (
-          <Menu.Item
-            key={month}
-            onPress={() => {
-              setSelectedMonth(month);
-              storeSelectedMonth(month);
-              closeMenu();
-            }}
-            title={month}
-            dense
-          />
-        ))}
+        <FlatList
+          data={MONTHS_ARRAY}
+          onScrollToIndexFailed={() => {}}
+          initialScrollIndex={MONTHS_ARRAY.indexOf(selectedMonth)}
+          renderItem={({ item }) => (
+            <Menu.Item
+              key={item}
+              onPress={() => {
+                setSelectedMonth(item);
+                storeSelectedMonth(item);
+                closeMenu();
+              }}
+              title={item}
+              dense
+            />
+          )}
+          keyExtractor={item => item}
+        />
       </Menu>
     </View>
   );
@@ -51,5 +59,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
     gap: 20,
+  },
+  h80: {
+    height: 80,
   },
 });
