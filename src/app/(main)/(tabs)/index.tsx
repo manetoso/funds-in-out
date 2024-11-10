@@ -5,6 +5,7 @@ import { useDashboardStore } from "@/src/stores";
 import { useFetchTransactionTotal, useFetchTransactions } from "@/src/features/transactions/hooks";
 import { MonthAccordion, MonthSelector } from "@/src/features/home/components/months-grid";
 import { MonthTotal } from "@/src/features/home/components/month-totals";
+import { TotalGraphs } from "@/src/features/home/components/total-graphs";
 import { TransactionsTable } from "@/src/features/transactions/components";
 import { TransactionType } from "@/src/api/resources/transactions/types/types";
 
@@ -41,6 +42,11 @@ export default function HomeScreen() {
       }>
       <MonthSelector />
       <MonthTotal
+        isError={isErrorTansactionsTotals}
+        isLoading={isLoadingTansactionsTotals}
+        totals={tansactionsTotals}
+      />
+      <TotalGraphs
         isError={isErrorTansactionsTotals}
         isLoading={isLoadingTansactionsTotals}
         totals={tansactionsTotals}

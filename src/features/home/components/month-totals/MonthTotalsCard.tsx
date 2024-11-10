@@ -1,5 +1,5 @@
 import { View, StyleSheet } from "react-native";
-import { Icon, Surface, Text } from "react-native-paper";
+import { Icon, Text } from "react-native-paper";
 
 import { TransactionTotals } from "@/src/api/resources/transactions/types/types";
 import { formatCurrency } from "@/src/common/utils";
@@ -8,7 +8,7 @@ type MonthTotalsCardProps = TransactionTotals;
 
 export const MonthTotalsCard = ({ balance, total_expense, total_income }: MonthTotalsCardProps) => {
   return (
-    <Surface style={[styles.surface]} elevation={4}>
+    <View style={[styles.surface]}>
       <View style={[styles.flexRow, styles.alignCenter, styles.gap4]}>
         <Text variant="bodyLarge">Total Balance</Text>
         <Icon source={balance > 0 ? "chevron-up" : "chevron-down"} size={16} />
@@ -36,17 +36,18 @@ export const MonthTotalsCard = ({ balance, total_expense, total_income }: MonthT
           </Text>
         </View>
       </View>
-    </Surface>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   surface: {
     // shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 4 },
+    // shadowOpacity: 0.05,
+    // shadowOffset: { width: 0, height: 4 },
     // shadowRadius: 3,
     // flex: 1,
+    backgroundColor: "#fff",
     borderRadius: 14,
     padding: 16,
     width: "100%",

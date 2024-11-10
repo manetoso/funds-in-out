@@ -1,0 +1,1 @@
+export { TotalGraphs } from "./TotalGraphs";
