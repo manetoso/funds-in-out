@@ -1,10 +1,10 @@
 import { Dimensions, StyleSheet, View } from "react-native";
 import { VictoryPie, VictoryTheme } from "victory-native";
+import { Text } from "@ui-kitten/components";
 
-import { mapBalanceToGraph } from "./utils";
 import { Skeleton, Switch } from "@/src/common/components";
+import { mapBalanceToGraph } from "./utils";
 import { type TransactionTotals } from "@/src/api/resources/transactions/types/types";
-import { Text } from "react-native-paper";
 
 type TotalGraphsProps = {
   totals: TransactionTotals | null | undefined;

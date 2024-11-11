@@ -14,5 +14,5 @@ export const getContrastColor = (hexcolor: string): string => {
   const g = parseInt(hexcolor.substring(2, 4), 16);
   const b = parseInt(hexcolor.substring(4, 6), 16);
   const luminance = getLuminance(r, g, b);
-  return luminance > 0.179 ? "#000" : "#FFF";
+  return luminance > 0.179 ? "#2E3A59" : "#F7F9FC";
 };
