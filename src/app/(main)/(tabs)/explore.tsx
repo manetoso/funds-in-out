@@ -1,5 +1,5 @@
-import { Text } from "react-native-paper";
+import { Text } from "@ui-kitten/components";
 
 export default function TabTwoScreen() {
-  return <Text variant="headlineMedium">Explore</Text>;
+  return <Text category="h1">Explore</Text>;
 }

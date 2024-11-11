@@ -1,42 +1,45 @@
 import { View, StyleSheet } from "react-native";
-import { Icon, Text } from "react-native-paper";
+import { Card, Icon, Text } from "@ui-kitten/components";
 
-import { TransactionTotals } from "@/src/api/resources/transactions/types/types";
 import { formatCurrency } from "@/src/common/utils";
+import { type TransactionTotals } from "@/src/api/resources/transactions/types/types";
 
 type MonthTotalsCardProps = TransactionTotals;
 
 export const MonthTotalsCard = ({ balance, total_expense, total_income }: MonthTotalsCardProps) => {
   return (
-    <View style={[styles.surface]}>
+    <Card style={[styles.surface]}>
       <View style={[styles.flexRow, styles.alignCenter, styles.gap4]}>
-        <Text variant="bodyLarge">Total Balance</Text>
-        <Icon source={balance > 0 ? "chevron-up" : "chevron-down"} size={16} />
+        <Text category="p1">Total Balance</Text>
+        <Icon
+          name={balance > 0 ? "chevron-up" : "chevron-down"}
+          style={{ width: 21, height: 21 }}
+        />
       </View>
       <View style={[styles.mT8, styles.mB8]}>
-        <Text variant="headlineMedium">{formatCurrency(balance ?? 0)}</Text>
+        <Text category="h4">{formatCurrency(balance ?? 0)}</Text>
       </View>
       <View style={[styles.flexRow, styles.alignCenter, styles.justifyBetween]}>
         <View>
           <View style={[styles.flexRow, styles.alignCenter, styles.gap8]}>
-            <Icon source="arrow-down-circle" size={16} />
-            <Text variant="bodyLarge">Income</Text>
+            <Icon name="arrow-circle-down" style={{ width: 16, height: 16 }} />
+            <Text category="p2">Income</Text>
           </View>
-          <Text variant="bodySmall">{formatCurrency(total_income ?? 0)}</Text>
+          <Text category="h6">{formatCurrency(total_income ?? 0)}</Text>
         </View>
         <View>
           <View style={[styles.flexRow, styles.alignCenter, styles.gap8]}>
-            <Icon source="arrow-up-circle" size={16} />
-            <Text variant="bodyLarge" style={styles.textRight}>
+            <Icon name="arrow-circle-up" style={{ width: 16, height: 16 }} />
+            <Text category="p2" style={styles.textRight}>
               Expenses
             </Text>
           </View>
-          <Text variant="bodySmall" style={styles.textRight}>
+          <Text category="h6" style={styles.textRight}>
             {formatCurrency(total_expense ?? 0)}
           </Text>
         </View>
       </View>
-    </View>
+    </Card>
   );
 };
 
@@ -47,9 +50,9 @@ const styles = StyleSheet.create({
     // shadowOffset: { width: 0, height: 4 },
     // shadowRadius: 3,
     // flex: 1,
-    backgroundColor: "#fff",
-    borderRadius: 14,
-    padding: 16,
+    // backgroundColor: "#fff",
+    // padding: 16,
+    borderRadius: 16,
     width: "100%",
   },
   flexRow: {
