@@ -1,14 +1,18 @@
 import { useEffect } from "react";
 import { Platform } from "react-native";
-import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+import * as eva from "@eva-design/eva";
+import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
+import { EvaIconsPack } from "@ui-kitten/eva-icons";
+import "react-native-reanimated";
+
+// REMOVE THIS
 import { PaperProvider } from "react-native-paper";
 import { enGB, registerTranslation } from "react-native-paper-dates";
-import "react-native-reanimated";
 
 import { ContolSnackBar } from "@/src/common/components/ContolSnackBar";
 
@@ -16,15 +20,15 @@ import { ContolSnackBar } from "@/src/common/components/ContolSnackBar";
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
+// REMOVE THIS
 registerTranslation("en-GB", enGB);
 
 /*
   TODO LIST:
-  - Work in UI
-    - Use BottomNavigation from react-native-paper
-    - Use Appbar from react-native-paper
-  - Add graphs of expenses and incomes in the main screen
-  - Add graphs to history/statistics
+  - Shift to UI Kitten
+  - Simplier Home (last or month expenses)
+  - Actual home as history/balance/statistics screen
+    - Add graphs
 */
 
 export default function RootLayout() {
@@ -44,7 +48,8 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={DefaultTheme}>
+      <IconRegistry icons={EvaIconsPack} />
+      <ApplicationProvider {...eva} theme={eva.light}>
         <PaperProvider>
           <Stack>
             <Stack.Screen name="(main)/(tabs)" options={{ headerShown: false }} />
@@ -82,7 +87,7 @@ export default function RootLayout() {
           </Stack>
           <ContolSnackBar />
         </PaperProvider>
-      </ThemeProvider>
+      </ApplicationProvider>
       {Platform.OS === "web" && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
