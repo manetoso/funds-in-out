@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
-import { List, Text } from "react-native-paper";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { Button, Icon, Layout, Text } from "@ui-kitten/components";
 
-import { ControlColorPicker, ControlTextInput } from "@/src/common/components";
-import { useMutateCategories } from "@/src/features/categories/hooks";
 import { useCategoryStore, useSnackbarStore } from "@/src/stores";
+import { useMutateCategories } from "@/src/features/categories/hooks";
+import { ControledColorPicker, ControledInput } from "@/src/common/components";
 import { type Category } from "@/src/api/resources/categories/types/types";
 
 type CategoryDetailsScreenParams = {
@@ -71,33 +71,34 @@ export default function CategoryDetailsScreen() {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={[styles.flex1]}>
-      <ControlTextInput<Omit<Category, "id">>
-        control={control}
-        error={!!errors.name}
-        label="Tag Name"
-        name="name"
-        required
-        onSubmitEditing={handleSubmit(handleFormSubmit)}
-        disabled={isAnyMutationLoading}
-      />
-      <ControlColorPicker<Omit<Category, "id">>
-        control={control}
-        error={!!errors.color}
-        label="Tag Color"
-        name="color"
-        required
-        onSubmitEditing={handleSubmit(handleFormSubmit)}
-        disabled={isAnyMutationLoading}
-      />
-      <Text variant="labelSmall">Options</Text>
-      <List.Section>
-        <List.Item
-          title="Delete Category"
-          left={props => <List.Icon {...props} icon="delete" />}
-          onPress={handleDelete}
+      <Layout level="1" style={{ flex: 1, padding: 24, gap: 16 }}>
+        <ControledInput<Omit<Category, "id">>
+          control={control}
+          error={!!errors.name}
+          label="Tag Name"
+          name="name"
+          required
+          onSubmitEditing={handleSubmit(handleFormSubmit)}
           disabled={isAnyMutationLoading}
         />
-      </List.Section>
+        <ControledColorPicker<Omit<Category, "id">>
+          control={control}
+          error={!!errors.color}
+          label="Tag Color"
+          name="color"
+          required
+          onSubmitEditing={handleSubmit(handleFormSubmit)}
+          disabled={isAnyMutationLoading}
+        />
+        <Text category="label">Options</Text>
+        <Button
+          accessoryLeft={accessoryProps => <Icon {...accessoryProps} name="trash" />}
+          disabled={isAnyMutationLoading}
+          onPress={handleDelete}
+          status="danger">
+          Delete tag
+        </Button>
+      </Layout>
     </KeyboardAvoidingView>
   );
 }
@@ -105,17 +106,5 @@ export default function CategoryDetailsScreen() {
 const styles = StyleSheet.create({
   flex1: {
     flex: 1,
-  },
-  flexGrow1: {
-    flexGrow: 1,
-  },
-  padding32: {
-    padding: 32,
-  },
-  gap16: {
-    gap: 16,
-  },
-  alignCenter: {
-    alignItems: "center",
   },
 });
