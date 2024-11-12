@@ -1,14 +1,22 @@
-import { useState } from "react";
-import { Modal, View, StyleSheet } from "react-native";
+import { ReactElement, useState } from "react";
+import { Modal, View, StyleSheet, Pressable } from "react-native";
 import {
-  type Control,
   Controller,
+  type Control,
   type FieldValues,
   type Path,
   useController,
 } from "react-hook-form";
-import { Button, Divider, TextInput, TextInputProps } from "react-native-paper";
 import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import {
+  Button,
+  Divider,
+  Icon,
+  Input,
+  type InputProps,
+  useTheme,
+  Text,
+} from "@ui-kitten/components";
 import ColorPicker, {
   HueCircular,
   Panel1,
@@ -16,7 +24,7 @@ import ColorPicker, {
   returnedResults,
 } from "reanimated-color-picker";
 
-type ControlColorPickerProps<T extends FieldValues> = TextInputProps & {
+type ControledColorPickerProps<T extends FieldValues> = InputProps & {
   control: Control<T, any>;
   error: boolean;
   label: string;
@@ -24,23 +32,23 @@ type ControlColorPickerProps<T extends FieldValues> = TextInputProps & {
   required?: boolean;
 };
 
-export function ControlColorPicker<T extends FieldValues>({
+export function ControledColorPicker<T extends FieldValues>({
   control,
   error,
   label,
   name,
   placeholder,
-  multiline = false,
   required = false,
   ...props
-}: ControlColorPickerProps<T>) {
+}: ControledColorPickerProps<T>) {
+  const theme = useTheme();
   const { field } = useController({ name: name as Path<T>, control });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const selectedColor = useSharedValue(field.value || "#8B8B8B");
+  const selectedColor = useSharedValue(field.value || theme["color-primary-500"]);
   const backgroundColorStyle = useAnimatedStyle(() => ({ backgroundColor: selectedColor.value }));
 
   const showModal = () => {
-    selectedColor.value = field.value || "#8B8B8B";
+    selectedColor.value = field.value || theme["color-primary-500"];
     setTimeout(() => {
       setIsModalOpen(true);
     }, 100);
@@ -55,29 +63,40 @@ export function ControlColorPicker<T extends FieldValues>({
     field.onChange(selectedColor.value.toUpperCase());
     hideModal();
   };
+  const renderCaption = (): ReactElement => {
+    if (error)
+      return (
+        <Text category="label" status="danger">
+          This field cannot be empty.
+        </Text>
+      );
+    return <></>;
+  };
   return (
     <View>
       <Controller
         control={control}
+        name={name as Path<T>}
         rules={{
           required,
         }}
         render={({ field: { onChange, onBlur, value } }) => (
-          <>
-            <TextInput
-              error={error}
-              label={label}
-              multiline={multiline}
-              onBlur={onBlur}
-              onChangeText={value => onChange(value.toUpperCase())}
-              placeholder={placeholder}
-              value={value}
-              right={<TextInput.Icon icon="palette" onPress={showModal} />}
-              {...props}
-            />
-          </>
+          <Input
+            accessoryRight={accessoryProps => (
+              <Pressable onPress={showModal}>
+                <Icon {...accessoryProps} name="color-palette" />
+              </Pressable>
+            )}
+            caption={renderCaption}
+            label={label}
+            onBlur={onBlur}
+            onChangeText={value => onChange(value.toUpperCase())}
+            placeholder={placeholder}
+            status={error ? "danger" : "basic"}
+            value={value}
+            {...props}
+          />
         )}
-        name={name as Path<T>}
       />
       <Modal onRequestClose={hideModal} visible={isModalOpen} animationType="slide">
         <Animated.View style={[styles.container, backgroundColorStyle]}>
@@ -95,10 +114,10 @@ export function ControlColorPicker<T extends FieldValues>({
               </HueCircular>
             </ColorPicker>
             <Divider />
-            <Button mode="contained" onPress={onColorSelected}>
+            <Button appearance="filled" onPress={onColorSelected}>
               Done
             </Button>
-            <Button mode="text" onPress={hideModal}>
+            <Button appearance="ghost" onPress={hideModal}>
               Cancel
             </Button>
           </View>

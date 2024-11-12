@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
-import { FAB, IconButton, List, Searchbar, Text } from "react-native-paper";
-
-import { useFetchCategories } from "@/src/features/categories/hooks/useFetchCategories";
-import { ScreenLoader, Switch } from "@/src/common/components";
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
+import { Layout, List, Text } from "@ui-kitten/components";
+
 import { useCategoryStore } from "@/src/stores";
+import { useFetchCategories } from "@/src/features/categories/hooks/useFetchCategories";
+import { CategoryListItem } from "@/src/features/categories/components";
+import { FAB, ScreenMessage, ScreenSpinner, SearchInput, Switch } from "@/src/common/components";
 
 export default function CategoriesScreen() {
+  const { setCurrentCategory } = useCategoryStore();
+  const [searchQuery, setSearchQuery] = useState("");
   const {
     data: categories,
     isError: isErrorCategories,
     isFetching: isLoadingCategories,
   } = useFetchCategories();
-  const { setCurrentCategory } = useCategoryStore();
-  const [searchQuery, setSearchQuery] = useState("");
   const [filteredCategories, setFilteredCategories] = useState<
     {
       id: number;
@@ -29,9 +30,9 @@ export default function CategoriesScreen() {
     if (query === "") return setFilteredCategories(categories);
 
     const formattedQuery = query.toLowerCase();
-    const filteredData = categories.filter(category => {
-      return category.name.toLowerCase().includes(formattedQuery);
-    });
+    const filteredData = categories.filter(category =>
+      category.name.toLowerCase().includes(formattedQuery),
+    );
     setFilteredCategories(filteredData);
   };
 
@@ -49,57 +50,46 @@ export default function CategoriesScreen() {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={[styles.flex1]}>
-      <Searchbar placeholder="Search" mode="view" onChangeText={handleSearch} value={searchQuery} />
-      <Text variant="labelSmall">Select an option or create one</Text>
-      <View style={[styles.flexGrow1, styles.pB140]}>
+      <Layout level="1" style={{ flex: 1, padding: 24, gap: 16 }}>
+        <SearchInput
+          handleSearch={handleSearch}
+          isLoading={isLoadingCategories || isErrorCategories || typeof categories === "undefined"}
+          value={searchQuery}
+        />
+        <Text category="label">Select an option or create one</Text>
         <Switch>
           <Switch.Case condition={isLoadingCategories}>
-            <ScreenLoader />
+            <ScreenSpinner />
           </Switch.Case>
           <Switch.Case condition={isErrorCategories || typeof categories === "undefined"}>
-            <Text>Failed to load categories, try again later.</Text>
+            <ScreenMessage message="Failed to load categories, try again later." />
           </Switch.Case>
           <Switch.Default>
-            <List.Section>
-              <FlatList
+            <View style={[styles.flex1, { paddingBottom: 24 }]}>
+              <List
+                contentContainerStyle={{ gap: 8 }}
                 data={filteredCategories}
-                keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
-                  <List.Item
-                    title={item.name}
-                    left={props => (
-                      <List.Icon
-                        {...props}
-                        color={typeof item.color === "string" ? item.color : "transparent"}
-                        icon="circle"
-                      />
-                    )}
-                    right={() => (
-                      <IconButton
-                        icon="dots-horizontal"
-                        size={20}
-                        onPress={() => {
-                          router.navigate(
-                            `/(main)/categories/details?queryId=${item.id}&queryName=${item.name}&queryColor=%23${item.color?.substring(1)}`,
-                          );
-                        }}
-                      />
-                    )}
-                    onPress={() => {
-                      setCurrentCategory(item.name);
-                      router.back();
+                  <CategoryListItem
+                    item={{
+                      id: item.id,
+                      name: item.name,
+                      color: item.color ?? "#fff",
                     }}
+                    setCurrentCategory={setCurrentCategory}
                   />
                 )}
+                style={{ borderRadius: 16 }}
+                snapToInterval={65.5 + 8}
               />
-            </List.Section>
+            </View>
           </Switch.Default>
         </Switch>
-      </View>
 
-      {!isLoadingCategories && !isErrorCategories && typeof categories !== "undefined" && (
-        <FAB icon="plus" size="small" style={styles.fab} onPress={handleFABPress} />
-      )}
+        {!isLoadingCategories && !isErrorCategories && typeof categories !== "undefined" && (
+          <FAB onPress={handleFABPress} />
+        )}
+      </Layout>
     </KeyboardAvoidingView>
   );
 }
@@ -107,29 +97,5 @@ export default function CategoriesScreen() {
 const styles = StyleSheet.create({
   flex1: {
     flex: 1,
-  },
-  flexGrow1: {
-    flexGrow: 1,
-  },
-  padding32: {
-    padding: 32,
-  },
-  pB140: {
-    paddingBottom: 140,
-  },
-  gap16: {
-    gap: 16,
-  },
-  alignCenter: {
-    alignItems: "center",
-  },
-  justifyCenter: {
-    justifyContent: "center",
-  },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
   },
 });
