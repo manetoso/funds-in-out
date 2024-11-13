@@ -1,28 +1,25 @@
 import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
-import { Button, FAB, Text } from "react-native-paper";
+import { Button, Text, Layout } from "@ui-kitten/components";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { parseISO } from "date-fns";
 
-import { useFetchCategories } from "@/src/features/categories/hooks/useFetchCategories";
+import { useCategoryStore, useSnackbarStore } from "@/src/stores";
 import { useMutateTransactions } from "@/src/features/transactions/hooks";
+import { useFetchCategories } from "@/src/features/categories/hooks/useFetchCategories";
 import { MapTransactionFormToAPI } from "@/src/features/transactions/utils/map-transaction-form-to-api";
 import {
-  ControlDateInput,
-  ControlSelectInput,
-  ControlTextInput,
+  ControledDatepicker,
+  ControledInput,
+  ControledSelect,
+  FAB,
+  ScreenMessage,
+  ScreenSpinner,
   Switch,
 } from "@/src/common/components";
-import {
-  TransactionFormError,
-  TransactionFormNoCategories,
-  TransactionLoader,
-} from "@/src/features/transactions/components";
-import { TransactionType } from "@/src/api/resources/transactions/types/types";
+import { TRANSACTION_TYPES } from "@/src/common/constants";
 import { type TransactionFormValues } from "@/src/features/transactions/types/transaction-form-values";
-import { useSnackbarStore } from "@/src/stores/useSnackbarStore";
-import { useCategoryStore } from "@/src/stores";
 
 type SingleTransactionScreenParams = {
   id?: string;
@@ -32,17 +29,6 @@ type SingleTransactionScreenParams = {
   queryDescription?: string;
   queryType?: string;
 };
-
-const TRNSACTION_TYPES = [
-  {
-    id: TransactionType.Expense,
-    name: TransactionType.Expense.charAt(0).toUpperCase() + TransactionType.Expense.slice(1),
-  },
-  {
-    id: TransactionType.Income,
-    name: TransactionType.Income.charAt(0).toUpperCase() + TransactionType.Income.slice(1),
-  },
-];
 
 export default function SingleTransactionScreen() {
   const { id, queryAmount, queryCategory, queryDate, queryDescription, queryType } =
@@ -124,98 +110,84 @@ export default function SingleTransactionScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={[styles.flex1]}>
       <ScrollView
-        contentContainerStyle={[
-          styles.padding32,
-          styles.gap16,
-          isLoadingCategories && styles.flexGrow1,
-        ]}
+        contentContainerStyle={styles.flexGrow1}
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
         contentInsetAdjustmentBehavior="always">
-        <Text variant="headlineMedium">Transaction Info</Text>
+        <Layout level="1" style={{ flex: 1, padding: 24, gap: 16 }}>
+          <Text category="h3">Transaction Info</Text>
 
-        <Switch>
-          <Switch.Case condition={isLoadingCategories}>
-            <TransactionLoader />
-          </Switch.Case>
-          <Switch.Case condition={isErrorCategories}>
-            <TransactionFormError />
-          </Switch.Case>
-          <Switch.Case condition={typeof categories === "undefined"}>
-            <TransactionFormNoCategories />
-          </Switch.Case>
-          <Switch.Default>
-            <ControlTextInput<TransactionFormValues>
-              control={control}
-              disabled={isAnyMutationLoading}
-              error={!!errors.amount}
-              keyboardType="numeric"
-              label="Amount"
-              name="amount"
-              placeholder="150"
-              required
-            />
-            <ControlTextInput<TransactionFormValues>
-              control={control}
-              disabled={isAnyMutationLoading}
-              error={!!errors.category}
-              label="Category"
-              name="category"
-              onPress={() => {
-                router.push("/(main)/categories");
-              }}
-              required
-            />
-            <ControlDateInput<TransactionFormValues>
-              control={control}
-              disabled={isAnyMutationLoading}
-              error={!!errors.date}
-              label="Date"
-              name="date"
-              required
-            />
-            <ControlTextInput<TransactionFormValues>
-              control={control}
-              disabled={isAnyMutationLoading}
-              error={!!errors.description}
-              label="Source"
-              multiline
-              name="description"
-              placeholder="Lunch"
-              required
-            />
-            <ControlSelectInput<TransactionFormValues>
-              control={control}
-              data={TRNSACTION_TYPES}
-              disabled={isAnyMutationLoading}
-              error={!!errors.type}
-              label="Tag"
-              name="type"
-              required
-            />
-            <Button
-              loading={isLoadingCategories || isAnyMutationLoading}
-              disabled={isLoadingCategories || isAnyMutationLoading}
-              onPress={handleSubmit(handleFormSubmit)}
-              mode="contained">
-              {transactionId !== 0 ? "Update" : "Add"}
-            </Button>
-          </Switch.Default>
-        </Switch>
+          <Switch>
+            <Switch.Case condition={isLoadingCategories}>
+              <ScreenSpinner />
+            </Switch.Case>
+            <Switch.Case condition={isErrorCategories}>
+              <ScreenMessage message="Failed to load categories, try again later." />
+            </Switch.Case>
+            <Switch.Default>
+              <ControledInput<TransactionFormValues>
+                control={control}
+                disabled={isAnyMutationLoading}
+                error={!!errors.amount}
+                keyboardType="numeric"
+                label="Amount"
+                name="amount"
+                placeholder="150"
+                required
+              />
+              <ControledInput<TransactionFormValues>
+                control={control}
+                disabled={isAnyMutationLoading}
+                error={!!errors.category}
+                label="Category"
+                name="category"
+                onPress={() => {
+                  router.push("/(main)/categories");
+                }}
+                required
+              />
+              <ControledDatepicker<TransactionFormValues>
+                control={control}
+                disabled={isAnyMutationLoading}
+                error={!!errors.date}
+                label="Date"
+                name="date"
+                required
+              />
+              <ControledInput<TransactionFormValues>
+                control={control}
+                disabled={isAnyMutationLoading}
+                error={!!errors.description}
+                label="Source"
+                multiline
+                name="description"
+                placeholder="Lunch"
+                required
+              />
+              <ControledSelect<TransactionFormValues>
+                control={control}
+                data={TRANSACTION_TYPES}
+                disabled={isAnyMutationLoading}
+                error={!!errors.type}
+                label="Tag"
+                name="type"
+                required
+              />
+              <Button
+                disabled={isLoadingCategories || isAnyMutationLoading}
+                onPress={handleSubmit(handleFormSubmit)}>
+                {transactionId !== 0 ? "Update" : "Add"}
+              </Button>
+            </Switch.Default>
+          </Switch>
+        </Layout>
       </ScrollView>
 
       {transactionId !== 0 &&
         !isLoadingCategories &&
         !isErrorCategories &&
         typeof categories !== "undefined" && (
-          <FAB
-            icon="delete"
-            size="small"
-            style={styles.fab}
-            onPress={handleDelete}
-            loading={isAnyMutationLoading}
-            disabled={isAnyMutationLoading}
-          />
+          <FAB icon="trash" onPress={handleDelete} disabled={isAnyMutationLoading} />
         )}
     </KeyboardAvoidingView>
   );
@@ -227,23 +199,5 @@ const styles = StyleSheet.create({
   },
   flexGrow1: {
     flexGrow: 1,
-  },
-  padding32: {
-    padding: 32,
-  },
-  gap16: {
-    gap: 16,
-  },
-  alignCenter: {
-    alignItems: "center",
-  },
-  justifyCenter: {
-    justifyContent: "center",
-  },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
   },
 });
