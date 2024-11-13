@@ -1,15 +1,15 @@
 import { Link, Stack } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { Text } from "react-native-paper";
+import { Text } from "@ui-kitten/components";
 
 export default function NotFoundScreen() {
   return (
     <>
       <Stack.Screen options={{ title: "Oops!" }} />
       <View style={styles.container}>
-        <Text variant="titleMedium">This screen doesn't exist.</Text>
+        <Text category="h5">This screen doesn't exist.</Text>
         <Link href="/" style={styles.link}>
-          <Text variant="labelSmall">Go to home screen!</Text>
+          <Text category="label">Go to home screen!</Text>
         </Link>
       </View>
     </>

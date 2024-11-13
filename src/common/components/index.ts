@@ -1,11 +1,10 @@
 export * from "./ContolSnackBar";
-export * from "./ControlDateInput";
-export * from "./ControlSelectInput";
-export * from "./ControlTextInput";
 export * from "./Skeleton";
 export * from "./Switch";
 
 export { ControledColorPicker } from "./ControledColorPicker";
+export { ControledDatepicker } from "./ControledDatepicker";
+export { ControledSelect } from "./ControledSelect";
 export { ControledInput } from "./ControledInput";
 export { FAB } from "./FAB";
 export { ScreenMessage } from "./ScreenMessage";

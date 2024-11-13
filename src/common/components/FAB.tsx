@@ -1,7 +1,7 @@
 import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
-import { Button, Icon } from "@ui-kitten/components";
+import { Button, ButtonProps, Icon } from "@ui-kitten/components";
 
-type FABProps = {
+type FABProps = ButtonProps & {
   onPress: () => void;
   icon?: string;
   containerStyle?: StyleProp<ViewStyle>;
@@ -15,6 +15,7 @@ export const FAB = ({
   icon = "plus",
   status = "primary",
   style,
+  ...props
 }: FABProps) => (
   <View style={[styles.fabContainer, containerStyle]}>
     <Button
@@ -22,6 +23,7 @@ export const FAB = ({
       onPress={onPress}
       status={status}
       style={[styles.fab, style]}
+      {...props}
     />
   </View>
 );
