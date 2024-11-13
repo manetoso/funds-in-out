@@ -1,6 +1,6 @@
 import { Pressable, View } from "react-native";
 import { Href, router } from "expo-router";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Text } from "@ui-kitten/components";
 
 import { formatCurrency, getContrastColor } from "@/src/common/utils";
@@ -64,7 +64,7 @@ export const MonthTransactionItem = ({
             {description ?? "-"}
           </Text>
           <Text category="c1" numberOfLines={1}>
-            {format(date ?? "", "MMM dd,yyyy")}
+            {format(parseISO(date?.split("T")[0] ?? ""), "MMM dd,yyyy")}
           </Text>
         </View>
       </View>
