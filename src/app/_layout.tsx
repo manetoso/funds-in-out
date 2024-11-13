@@ -10,18 +10,12 @@ import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import "react-native-reanimated";
 
-// REMOVE THIS
-import { PaperProvider } from "react-native-paper";
-import { enGB, registerTranslation } from "react-native-paper-dates";
-
 import { ContolSnackBar } from "@/src/common/components/ContolSnackBar";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
-// REMOVE THIS
-registerTranslation("en-GB", enGB);
 
 /*
   TODO LIST:
@@ -50,43 +44,41 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={eva.light}>
-        <PaperProvider>
-          <Stack>
-            <Stack.Screen name="(main)/(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="(main)/transactions/[id]"
-              options={{
-                title: "Transaction",
-                headerBackTitle: "Back",
-                headerTitleStyle: {
-                  fontWeight: "bold",
-                },
-              }}
-            />
-            <Stack.Screen
-              name="(main)/categories/index"
-              options={{
-                title: "Tags",
-                headerBackTitle: "Back",
-                headerTitleStyle: {
-                  fontWeight: "bold",
-                },
-              }}
-            />
-            <Stack.Screen
-              name="(main)/categories/details/index"
-              options={{
-                title: "Tag",
-                headerBackTitle: "Back",
-                headerTitleStyle: {
-                  fontWeight: "bold",
-                },
-              }}
-            />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <ContolSnackBar />
-        </PaperProvider>
+        <Stack>
+          <Stack.Screen name="(main)/(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="(main)/transactions/[id]"
+            options={{
+              title: "Transaction",
+              headerBackTitle: "Back",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+            }}
+          />
+          <Stack.Screen
+            name="(main)/categories/index"
+            options={{
+              title: "Tags",
+              headerBackTitle: "Back",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+            }}
+          />
+          <Stack.Screen
+            name="(main)/categories/details/index"
+            options={{
+              title: "Tag",
+              headerBackTitle: "Back",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+            }}
+          />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <ContolSnackBar />
       </ApplicationProvider>
       {Platform.OS === "web" && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
